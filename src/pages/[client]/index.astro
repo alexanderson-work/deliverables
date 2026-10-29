@@ -34,7 +34,7 @@ const brandNote = brand
 
 <ClientShell client={client} description={summary}>
   <header class="page-head">
-    <h1 class="rs-t-display">{name}</h1>
+    <h1 class="rs-t-display is-mark">{name}</h1>
     <p class="rs-t-sub">{summary}</p>
   </header>
 
@@ -121,7 +121,7 @@ const brandNote = brand
         {sections.map(({ section, guides: list }) => (
           <div class="guide-group">
             {sections.length > 1 && <h3 class="group-label">{section}</h3>}
-            <GuideRows client={client} guides={list} start={guides.indexOf(list[0]) + 1} />
+            <GuideRows client={client} guides={list} />
           </div>
         ))}
       </section>
@@ -140,7 +140,7 @@ const brandNote = brand
         <ul class="rows">
           {links.slice(0, 4).map((item) => (
             <li>
-              <a class="row row--plain" href={item.href} {...newTab(item.href)}>
+              <a class="row" href={item.href} {...newTab(item.href)}>
                 <span>
                   <span class="row-title">{item.title}</span>
                   {item.description && <span class="row-desc">{item.description}</span>}

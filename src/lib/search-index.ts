@@ -1,5 +1,5 @@
 import { render } from "astro:content";
-import { clientUrl, getClientGuides, guideUrl, pad, slug, type Client } from "./content";
+import { clientUrl, getClientGuides, guideUrl, slug, type Client } from "./content";
 import { isExternal } from "./links";
 
 /** One thing a reader can find: a page, a guide, a section of a guide, or a brand asset. */
@@ -77,7 +77,7 @@ export async function searchRecords(client: Client): Promise<SearchRecord[]> {
 
   // Each guide, then each of its sections, so a result can land on the right heading.
   const guides = await getClientGuides(client);
-  for (const [i, guide] of guides.entries()) {
+  for (const guide of guides) {
     const { title, summary, section } = guide.data;
     const url = guideUrl(client, guide);
     const { headings } = await render(guide);
@@ -90,7 +90,7 @@ export async function searchRecords(client: Client): Promise<SearchRecord[]> {
       text: `${summary} ${plain(parts[0])}`,
       keywords: section,
       url,
-      hint: `Guide ${pad(i + 1)}`,
+      hint: section,
     });
     let next = 0;
     for (let p = 1; p < parts.length; p += 3) {

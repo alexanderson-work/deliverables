@@ -37,9 +37,6 @@ export const slug = (s: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-/** Two-digit guide numbers: 01, 02, … */
-export const pad = (n: number) => String(n).padStart(2, "0");
-
 /** Guides grouped by their section, keeping reading order. */
 export function bySection(guides: Guide[]): { section: string; guides: Guide[] }[] {
   const groups = new Map<string, Guide[]>();

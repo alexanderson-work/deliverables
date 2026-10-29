@@ -1,23 +1,20 @@
 ---
 import { Icon } from "@noorddev/vlak-react";
-import { guideUrl, pad, type Client, type Guide } from "../lib/content";
+import { guideUrl, type Client, type Guide } from "../lib/content";
 
 interface Props {
   client: Client;
   guides: Guide[];
-  /** Number offset when the list continues from a featured guide. */
-  start?: number;
 }
 
-const { client, guides, start = 1 } = Astro.props;
+const { client, guides } = Astro.props;
 ---
 
 <ol class="rows">
   {
-    guides.map((guide, i) => (
+    guides.map((guide) => (
       <li>
         <a class="row" href={guideUrl(client, guide)}>
-          <span class="row-num">{pad(start + i)}</span>
           <span>
             <span class="row-title">{guide.data.title}</span>
             <span class="row-desc">{guide.data.summary}</span>

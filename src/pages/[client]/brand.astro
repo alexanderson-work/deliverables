@@ -147,7 +147,7 @@ const groundStyle = `--ground-light: ${brand.grounds.light}; --ground-dark: ${br
         <ul class="rows">
           {brand.type.map((face) => (
             <li>
-              <a class="row row--plain" href={face.href ?? "#type"} {...newTab(face.href)}>
+              <a class="row" href={face.href ?? "#type"} {...newTab(face.href)}>
                 <span>
                   <span class="row-title">{face.name}</span>
                   {face.description && <span class="row-desc">{face.description}</span>}

@@ -30,7 +30,7 @@ const { client } = Astro.props as { client: Client };
         <ul class="rows">
           {group.items.map((item) => (
             <li>
-              <a class="row row--plain" href={item.href} {...newTab(item.href)}>
+              <a class="row" href={item.href} {...newTab(item.href)}>
                 <span>
                   <span class="row-title">{item.title}</span>
                   {item.description && <span class="row-desc">{item.description}</span>}

@@ -214,6 +214,20 @@ html.title-in-view .mobile-bar-here {
   }
 }
 
+.contact-card,
+.contact-card strong + span {
+  transition:
+    background-color var(--duration-release) var(--ease-glide),
+    color var(--duration-release) var(--ease-glide);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .contact-card:hover,
+  .contact-card:hover strong + span {
+    transition-duration: var(--duration-snap);
+  }
+}
+
 .row-go {
   opacity: 0;
   transform: translateX(-6px);
@@ -342,6 +356,8 @@ img.is-loading {
   .rs-sidebar-item,
   .toc a,
   .row-go,
+  .contact-card,
+  .contact-card strong + span,
   .asset-preview,
   img[loading="lazy"],
   .copy-icon > *,

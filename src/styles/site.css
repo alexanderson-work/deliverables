@@ -10,6 +10,12 @@
   --mobile-h: 60px;
   --measure: 592px;
   --wide: 796px;
+  /* Type steps, after vlak.dev: very large titles, then a quick drop to
+     modest section heads and small working text. */
+  --t-mark: clamp(4rem, 9vw, 8rem);
+  --t-display: clamp(2.5rem, 4.5vw, 4rem);
+  --t-section: 1.75rem;
+  --t-subsection: 1.25rem;
 }
 
 body {
@@ -295,10 +301,66 @@ a.rs-btn-ghost {
   }
 }
 
-.shell-rail .rs-sidebar-foot {
+/* ── Contact ──
+   The studio's photo and an email link, pinned at the foot of the rail and
+   the phone menu. */
+
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.shell-rail .contact-card {
+  padding: 12px 20px;
+  border-top: 1px solid var(--divider);
+}
+
+.contact-card img {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.contact-card > span {
   display: grid;
-  gap: 2px;
-  padding-block: 16px;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.contact-card strong {
+  font-size: 0.8125rem;
+  font-weight: var(--weight-strong);
+}
+
+.contact-card strong + span {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.mobile-menu-foot .contact-card {
+  margin: -6px -8px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.contact-card:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .contact-card:hover {
+    background-color: color-mix(in srgb, var(--text) 4%, transparent);
+  }
+  .contact-card:hover strong + span {
+    color: var(--text);
+  }
 }
 
 .shell > .page {
@@ -431,6 +493,7 @@ a.rs-btn-ghost {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   margin-top: 20px;
   padding-top: 12px;
   border-top: 1px solid var(--divider);
@@ -449,7 +512,26 @@ a.rs-btn-ghost {
 }
 
 .page-head > * + * {
-  margin-top: 12px;
+  margin-top: 20px;
+}
+
+/* Page titles are statements; the client's name on its overview is the mark. */
+.page-head .rs-t-display {
+  font-size: var(--t-display);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.page-head .rs-t-display.is-mark {
+  font-size: var(--t-mark);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  overflow-wrap: break-word;
+}
+
+/* Room for the mark's descenders before the intro. */
+.page-head .is-mark + * {
+  margin-top: 28px;
 }
 
 .page-head .rs-t-sub {
@@ -483,15 +565,16 @@ a.rs-btn-ghost {
   align-items: baseline;
   justify-content: space-between;
   gap: 20px;
-  padding-bottom: 12px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--divider);
 }
 
 .section-head h2 {
   margin: 0;
-  font-size: 1.0625rem;
+  font-size: var(--t-section);
   font-weight: var(--weight-strong);
-  letter-spacing: -0.01em;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
 }
 
 .section-head a {
@@ -512,8 +595,10 @@ a.rs-btn-ghost {
   .section {
     margin-top: 52px;
   }
-  .page-head .rs-t-display {
-    font-size: 1.875rem;
+  .page {
+    --t-mark: 4rem;
+    --t-display: 2.25rem;
+    --t-section: 1.375rem;
   }
 }
 
@@ -529,7 +614,7 @@ a.rs-btn-ghost {
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-columns: 52px minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 0 20px;
   align-items: baseline;
   padding: 16px 0;
@@ -548,10 +633,6 @@ a.rs-btn-ghost {
   transition: var(--transition);
 }
 
-.row--plain {
-  grid-template-columns: minmax(0, 1fr) auto;
-}
-
 a.row:focus-visible {
   outline: 2px solid var(--text);
   outline-offset: 2px;
@@ -566,7 +647,6 @@ a.row:focus-visible {
   }
 }
 
-.row-num,
 .row-meta {
   font-size: 0.8125rem;
   color: var(--text-secondary);
@@ -576,7 +656,7 @@ a.row:focus-visible {
 
 .row-title {
   display: block;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: var(--weight-strong);
   letter-spacing: -0.01em;
   text-decoration: underline;
@@ -603,17 +683,10 @@ a.row:focus-visible {
 
 @media (max-width: 640px) {
   .row {
-    grid-template-columns: 32px minmax(0, 1fr);
-  }
-  .row--plain {
     grid-template-columns: minmax(0, 1fr);
   }
   .row-meta {
-    grid-column: 2;
     margin-top: 6px;
-  }
-  .row--plain .row-meta {
-    grid-column: 1;
   }
 }
 
@@ -922,25 +995,30 @@ a.row:focus-visible {
 }
 
 .prose h2 {
-  margin-top: 52px;
-  font-size: 1.375rem;
+  margin-top: 64px;
+  font-size: var(--t-section);
   font-weight: var(--weight-strong);
-  letter-spacing: -0.02em;
-  line-height: 1.3;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
   scroll-margin-top: calc(var(--top-h) + 32px);
   text-wrap: balance;
 }
 
 .prose h3 {
-  margin-top: 32px;
-  font-size: 1.0625rem;
+  margin-top: 36px;
+  font-size: var(--t-subsection);
   font-weight: var(--weight-strong);
+  letter-spacing: -0.015em;
+  line-height: 1.25;
   scroll-margin-top: calc(var(--top-h) + 32px);
 }
 
-.prose h2 + *,
+.prose h2 + * {
+  margin-top: 16px;
+}
+
 .prose h3 + * {
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 .prose p,
@@ -1222,7 +1300,7 @@ a.row:focus-visible {
 
 .asset-name {
   margin: 12px 0 0;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: var(--weight-strong);
 }
 
@@ -1319,9 +1397,9 @@ a.row:focus-visible {
 
 .contact h2 {
   margin: 0;
-  font-size: 1.0625rem;
+  font-size: var(--t-subsection);
   font-weight: var(--weight-strong);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
 .contact p {
@@ -1349,7 +1427,7 @@ a.row:focus-visible {
 
 .swatch-name {
   margin: 12px 0 0;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: var(--weight-strong);
 }
 

@@ -12,13 +12,14 @@ interface Props {
   here: string;
   current: string;
   groups: NavGroup[];
-  studio: { name: string; url: string };
+  /** The studio's contact link, with a photo. */
+  contact: { name: string; photo: string; href: string };
   /** The client's lockup, one file per scheme. */
   logo?: { light: string; dark: string };
 }
 
 /** Phone and tablet chrome: name, current page, search, and the menu. */
-export default function MobileNav({ clientName, home, here, current, groups, studio, logo }: Props) {
+export default function MobileNav({ clientName, home, here, current, groups, contact, logo }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -73,8 +74,12 @@ export default function MobileNav({ clientName, home, here, current, groups, stu
           ))}
         </nav>
         <div className="mobile-menu-foot">
-          <a href={studio.url} target="_blank" rel="noopener noreferrer" style={{ color: "inherit" }}>
-            {studio.name}
+          <a className="contact-card" href={contact.href}>
+            <img src={contact.photo} alt="" width={32} height={32} />
+            <span>
+              <strong>{contact.name}</strong>
+              <span>Questions? Email me</span>
+            </span>
           </a>
           <ThemeToggle className="rs-theme-toggle-inline" />
         </div>

@@ -1,5 +1,5 @@
 ---
-import { Breadcrumbs, Icon, Sidebar, SidebarFoot, SidebarItem, SidebarLabel, SidebarNav } from "@noorddev/vlak-react";
+import { Breadcrumbs, Icon, Sidebar, SidebarItem, SidebarLabel, SidebarNav } from "@noorddev/vlak-react";
 import { ThemeToggle } from "@noorddev/vlak-react/components/theme-toggle";
 import Base from "./Base.astro";
 import MobileNav from "../components/MobileNav";
@@ -7,8 +7,7 @@ import Search from "../components/Search";
 import { clientNav } from "../components/ClientNav";
 import { clientUrl, type Client } from "../lib/content";
 import { themeCss, themePaper } from "../lib/theme";
-import { newTab } from "../lib/links";
-import { siteTitle, studio } from "../site.config";
+import { contactHref, siteTitle, studio } from "../site.config";
 
 interface Props {
   client: Client;
@@ -25,6 +24,7 @@ const current = Astro.url.pathname;
 const groups = await clientNav(client);
 const here = title ?? "Overview";
 const theme = client.data.theme;
+const contact = { name: studio.name, photo: studio.photo, href: contactHref(client.data.name) };
 ---
 
 <Base
@@ -63,7 +63,7 @@ const theme = client.data.theme;
       here={here}
       current={current}
       groups={groups}
-      studio={studio}
+      contact={contact}
       logo={theme?.logo}
     />
   </div>
@@ -94,11 +94,15 @@ const theme = client.data.theme;
             ))
           }
         </SidebarNav>
-        <SidebarFoot>
-          <span>Prepared by</span>
-          <a href={studio.url} {...newTab(studio.url)} style="color: var(--text); text-decoration: none">{studio.name}</a>
-        </SidebarFoot>
       </Sidebar>
+      <!-- Pinned under the list, as search is above it. -->
+      <a class="contact-card" href={contact.href}>
+        <img src={contact.photo} alt="" width="32" height="32" />
+        <span>
+          <strong>{contact.name}</strong>
+          <span>Questions? Email me</span>
+        </span>
+      </a>
     </div>
 
     <main class="page" id="main">

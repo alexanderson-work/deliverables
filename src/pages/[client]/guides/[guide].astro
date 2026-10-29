@@ -8,7 +8,7 @@ import GuideVideo from "../../../components/GuideVideo.astro";
 import InlineCode from "../../../components/InlineCode.astro";
 import ProseLink from "../../../components/ProseLink.astro";
 import Toc from "../../../components/Toc.astro";
-import { formatDate, getClientGuides, guideSlug, guideUrl, pad, type Client, type Guide } from "../../../lib/content";
+import { formatDate, getClientGuides, guideSlug, guideUrl, type Client, type Guide } from "../../../lib/content";
 
 export async function getStaticPaths() {
   const clients = await getCollection("clients");
@@ -17,7 +17,7 @@ export async function getStaticPaths() {
       const guides = await getClientGuides(client);
       return guides.map((guide, i) => ({
         params: { client: client.id, guide: guideSlug(guide) },
-        props: { client, guide, index: i, prev: guides[i - 1], next: guides[i + 1] },
+        props: { client, guide, prev: guides[i - 1], next: guides[i + 1] },
       }));
     }),
   );
@@ -27,12 +27,11 @@ export async function getStaticPaths() {
 interface Props {
   client: Client;
   guide: Guide;
-  index: number;
   prev?: Guide;
   next?: Guide;
 }
 
-const { client, guide, index, prev, next } = Astro.props;
+const { client, guide, prev, next } = Astro.props;
 const { title, summary, duration, updated, video } = guide.data;
 const { Content, headings } = await render(guide);
 ---
@@ -48,7 +47,6 @@ const { Content, headings } = await render(guide);
       <header class="page-head">
         <p class="eyebrow">
           <span>{guide.data.section}</span>
-          <span>Guide {pad(index + 1)}</span>
           {duration && <span>{duration}</span>}
           {updated && <span>Updated {formatDate(updated)}</span>}
         </p>
