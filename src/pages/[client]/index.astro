@@ -4,7 +4,7 @@ import { Icon } from "@noorddev/vlak-react";
 import ClientShell from "../../layouts/ClientShell.astro";
 import GuideRows from "../../components/GuideRows.astro";
 import Contact from "../../components/Contact.astro";
-import { bySection, clientUrl, getClientGuides, guideUrl, type Client } from "../../lib/content";
+import { andList, bySection, clientUrl, getClientGuides, guideUrl, type Client } from "../../lib/content";
 import { newTab } from "../../lib/links";
 import { agentFiles, starterPrompt } from "../../lib/agents";
 
@@ -14,7 +14,7 @@ export async function getStaticPaths() {
 }
 
 const { client } = Astro.props as { client: Client };
-const { name, summary, project, brand, resources } = client.data;
+const { name, summary, deliverables, project, brand, resources } = client.data;
 const base = clientUrl(client);
 const guides = await getClientGuides(client);
 const sections = bySection(guides);
@@ -36,6 +36,7 @@ const brandNote = brand
 
 <ClientShell client={client} description={summary}>
   <header class="page-head">
+    {deliverables.length > 0 && <p class="eyebrow">{andList(deliverables)}</p>}
     <h1 class="rs-t-display is-mark">{name}</h1>
     <p class="rs-t-sub">{summary}</p>
   </header>

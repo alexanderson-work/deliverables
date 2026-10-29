@@ -94,6 +94,8 @@ const clients = defineCollection({
   schema: z.object({
     name: z.string(),
     summary: z.string(),
+    /** What was delivered, shown on one line in the overview's title band: "Brand Refresh & Website Design". */
+    deliverables: z.array(z.string()).default([]),
     /** Shared guides from src/content/guides/shared to include, by file name. */
     sharedGuides: z.array(z.string()).default([]),
     /** Shown on the overview as a short list of facts. */

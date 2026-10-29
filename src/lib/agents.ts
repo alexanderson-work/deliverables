@@ -4,7 +4,7 @@
  * URL for every logo, color, typeface, and guide. Everything is built from the
  * same content as the pages, so the two never drift apart.
  */
-import { getClientGuides, guideSlug, guideUrl, clientUrl, formatDate, type Client, type Guide } from "./content";
+import { andList, getClientGuides, guideSlug, guideUrl, clientUrl, formatDate, type Client, type Guide } from "./content";
 import { isExternal } from "./links";
 import { studio } from "../site.config";
 
@@ -98,11 +98,11 @@ const bullets = (lines: string[]) => lines.map((line) => `- ${line}`).join("\n")
 
 /** /<client>/llms.txt, in the llms.txt format (llmstxt.org). */
 export async function llmsTxt(client: Client, site: URL) {
-  const { name, summary, brand, resources } = client.data;
+  const { name, summary, deliverables, brand, resources } = client.data;
   const files = agentFiles(client, site);
   const guides = await getClientGuides(client);
   const out = [
-    `# ${name}: brand and website deliverables`,
+    `# ${name}${deliverables.length ? `: ${andList(deliverables)}` : ""}`,
     "",
     `> ${summary} Delivered by ${studio.name} (${studio.url}). People see these at ${absolute(clientUrl(client), site)}; this file is the version for AI tools.`,
     "",

@@ -53,7 +53,7 @@ export async function searchRecords(client: Client): Promise<SearchRecord[]> {
   const records: Omit<SearchRecord, "id">[] = [];
   const add = (record: Omit<SearchRecord, "id">) => records.push(record);
 
-  add({ kind: "page", group: "Pages", title: "Overview", text: summary, keywords: name, url: base });
+  add({ kind: "page", group: "Pages", title: "Overview", text: summary, keywords: [name, ...client.data.deliverables].join(" "), url: base });
   if (brand) {
     add({
       kind: "page",

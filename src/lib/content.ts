@@ -30,6 +30,10 @@ export async function getClientGuides(client: Client): Promise<Guide[]> {
 export const formatDate = (date: Date) =>
   date.toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
+/** "A", "A & B", "A, B & C". */
+export const andList = (items: string[]) =>
+  items.length > 1 ? `${items.slice(0, -1).join(", ")} & ${items.at(-1)}` : (items[0] ?? "");
+
 /** An anchor id from a heading: "Logo animation" → "logo-animation". */
 export const slug = (s: string) =>
   s

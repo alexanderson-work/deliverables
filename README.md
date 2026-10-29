@@ -20,7 +20,7 @@ npm run build    # static site in dist/
 2. Put the client's files in `public/clients/<slug>/` and reference them from the YAML as `/clients/<slug>/...`.
 3. Add guides as `.mdx` files in `src/content/guides/<slug>/`.
 
-Every section is optional. Leave out `brand` and there's no brand page; leave out `resources` and there's no resources page.
+Every section is optional. Leave out `brand` and there's no brand page; leave out `resources` and there's no resources page. `deliverables` (for JustiFi, `[Brand Refresh, Website Design]`) shows on one line above the client's name on the overview.
 
 ### Dress a space in the client's brand
 
