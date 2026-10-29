@@ -1,0 +1,5 @@
+/* CSS-only Vlak classes used on plain markup (links styled as buttons, text links).
+   The React stylesheet styles components through compiled classes, so these
+   rs-* rules are pulled in from @noorddev/vlak and kept in Vlak's own layer. */
+@import "@noorddev/vlak/css/components/button.css" layer(vlak.components);
+@import "@noorddev/vlak/css/components/link.css" layer(vlak.components);

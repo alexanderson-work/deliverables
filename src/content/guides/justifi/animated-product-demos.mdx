@@ -1,0 +1,179 @@
+---
+title: "The Animated Product Demos"
+summary: "Every UI mockup on the site, with screenshots — how they're built, why they aren't video, and how to edit them."
+section: "Design system"
+order: 9
+duration: "8 min read"
+updated: 2026-09-04
+---
+
+<Callout>
+  <p>Every product mockup on this site is <strong>built natively in Framer</strong> — real frames, real text, real animation. None of them are screenshots, images, or video. That is why they stay razor-sharp at any screen size and animate piece by piece as you scroll to them.</p>
+</Callout>
+
+<Callout>
+  <p><strong>Framer Academy — free video lessons</strong></p>
+  <p><a href="https://www.framer.com/academy/courses/mastering-animations-and-interactions-in-framer">Animations and Interactions in Framer (full course)</a> — covers the appear effects and variant transitions these are built on</p>
+</Callout>
+
+## Every demo on the site
+
+| Demo | Where | Built as |
+| --- | --- | --- |
+| **Product Demo** / **Product Demo Mobile** | Home, in the tabbed showcase below the hero | Component, 3 variants each |
+| **Ledger Card**, **Split Card**, **Catalog Card** | `/products`, one at the top of each product section | Frames on the page |
+| **Controls / Flexibility / Intelligence / Automation Cards** | Home, the four sticky "Built for control" rows | Frames on the page |
+| **Scrolling Accordion** | Home | Component, 3 variants |
+| **Onboarding Matrix** | `/sub-account-onboarding` | Component, 5 variants |
+| **Rate Control Card** | `/solutions/vertical-software` and `/solutions/insurtech-mga` | Frame on the page |
+| **FlowLoop** | All three `/solutions/*` pages | Code component |
+
+## Why they aren't video
+
+The obvious way to put a product demo on a marketing site is to record the app and drop in an MP4. That was tried and rejected, for two reasons:
+
+- **These mockups are roughly 85% small text** — stat labels, row names, amounts, all between 12 and 18px. Video compression smears text at that size, and it looks especially bad next to the crisp type everywhere else on the page.
+- **Transparency does not survive.** Video with an alpha channel fails in Safari, and video without one carries its own background, which would sit as a visible rectangle on the navy page.
+
+The cost is that a native demo needs its own type sizing per breakpoint, where a video would simply scale. That is why several of these exist as a desktop and a mobile pair.
+
+## 1. The home showcase — Product Demo
+
+The largest of them: a full dashboard mockup inside the tabbed showcase below the hero.
+
+<Figure src="/clients/justifi/guides/animated-product-demos/1.png" alt="Product Demo dashboard mockup, Payments variant: a JustiFi sidebar with Payments highlighted, four stat tiles (Volume today $284,120, Approval rate 97.2%, Avg ticket $184, Methods live 4), payment-method chips, and a feed of transaction rows with Succeeded and Pending status pills." caption="Product Demo, Payments variant — 1072px wide" />
+
+| Component | Width | Used at |
+| --- | --- | --- |
+| **Product Demo** | `1072px` fixed | Desktop **and tablet** |
+| **Product Demo Mobile** | `352px` fixed | Phone only |
+
+Both have the same three variants: **Payments**, **Payables**, and **Beyond Payments**.
+
+<Callout>
+  <p>They have to be two separate components because <strong>a component variant cannot have a percentage or flexible width</strong> — Framer requires a fixed pixel value on a variant root. A fixed-width component does not shrink to fit its container; it clips. The <code>1072px</code> is measured to fit its slot exactly, so <strong>if you change the showcase's width or padding, the demo will clip until you re-measure it.</strong></p>
+</Callout>
+
+### How one is built
+
+A horizontal stack: a **Sidebar** (`230px`, logo plus nine menu items) and a **Content** column that fills the rest, holding four stat tiles and then the body.
+
+The clever part is the body. **All three bodies exist in every variant as siblings**, and each variant simply hides two of them:
+
+| Variant | Visible body | Shape |
+| --- | --- | --- |
+| Payments | Body — Payments | A **feed** — uniform transaction rows |
+| Payables | Body — Payables | A **flow** — a batch total splitting across rails into destinations |
+| Beyond Payments | Body — Beyond Payments | A **portfolio** — a revenue chart over a grid of product cards |
+
+An early version made all three look nearly identical, and the feedback was exactly that. The fix was a principle worth keeping:
+
+> **Keep the shared chrome identical, and give each demo the body shape its own story needs.**
+
+The sidebar and the four stat tiles are what make the three read as one product. The body is what makes them read as three different things. They are distinguishable even as thumbnails — a list, a branching flow, and a chart over cards.
+
+There is also no separate "active state" layer in the sidebar. The highlighted menu item is just a per-variant fill and text color override.
+
+### The mobile version
+
+<Figure src="/clients/justifi/guides/animated-product-demos/2.png" alt="Product Demo Mobile, Payments variant: a narrow icon rail in place of the sidebar, the four stat tiles in a 2×2 grid, payment-method chips, and transaction rows marked with small colored status dots instead of pills." caption="Product Demo Mobile, Payments variant — 352px wide" />
+
+Not a scaled-down copy — a genuine redraw. The sidebar becomes a narrow icon rail, the stat tiles go to a 2×2 grid, and status pills are replaced by small colored dots, because pills would not fit.
+
+### How they're wired in
+
+The demos sit inside the tabbed **Solutions Showcase** (`1120px`, desktop and tablet) and **Solutions Showcase Mobile** (`400px`, phone). Each showcase has three variants, one per tab; switching a tab switches the demo with it.
+
+<Callout>
+  <p><strong>Tablet uses the desktop showcase, not the mobile one.</strong> Only phone swaps components. The demo reflows to roughly 682px at tablet, which is why the stat tiles are a <strong>grid</strong> with a minimum column width rather than a fixed four-across row, and why every row of text has truncation enabled — without those, numbers break mid-figure and names break mid-word.</p>
+</Callout>
+
+## 2. The `/products` section visuals
+
+Each of the three product sections opens with its own animated card. These are frames on the page rather than components, since each is used once.
+
+**Payments — Ledger Card**
+
+<Figure src="/clients/justifi/guides/animated-product-demos/3.png" alt="Ledger Card: a transaction ledger listing Authorization and Capture at $2,480.00, then a processing fee and a platform fee as deductions, with a net settled total of $2,382.78." caption="Ledger Card, top of the Payments section" />
+
+**Payables — Split Card**
+
+<Figure src="/clients/justifi/guides/animated-product-demos/4.png" alt="Split Card: a $7,450.00 payables batch of three payments with a 1% platform fee badge, each row showing a payer-to-destination split with a colored bar beneath it." caption="Split Card, top of the Payables section" />
+
+The colored bars fill on scroll. They are deliberately tuned to start nearly empty — that was a specific correction, so if you rebuild them, keep the starting width minimal rather than letting it default.
+
+**Beyond Payments — Catalog Card**
+
+<Figure src="/clients/justifi/guides/animated-product-demos/5.png" alt="Catalog Card: a product catalog marked Under your brand, listing Consumer Financing and Insurance as Live, Instant Payouts as Beta, and Working Capital as Coming soon." caption="Catalog Card, top of the Beyond Payments section" />
+
+<Callout>
+  <p><strong>The "Products Slider" is not a demo.</strong> Despite the name, it is the floating section-nav pill at the top of <code>/products</code> that jumps between Payments, Payables, and Beyond Payments. <strong>Products Slider Mobile</strong> is its phone equivalent, with open and closed states. Neither renders any product UI.</p>
+</Callout>
+
+## 3. The "Built for control" sticky cards
+
+Further down the home page, four sticky rows — **Control**, **Flexibility**, **Intelligence**, and **Automation** — each pair copy with their own native visual, driven by the **Sticky Highlight Set** component as you scroll.
+
+<Figure src="/clients/justifi/guides/animated-product-demos/6.png" alt="Controls Card: a Policy controls panel tagged Set by you, with rows for Pricing (2.65% + $0.10), Packaging (Included), Risk ($5,000), and Compliance (Required)." caption="Controls Card, the visual for the Control row" />
+
+Each of those rows currently contains **more than one generation of the same visual, stacked, with only the newest visible**:
+
+| Row | Live now | Hidden, kept |
+| --- | --- | --- |
+| Control | Controls Card (Native) | Checkout Detail (Native), and an older Video component |
+| Flexibility | Flexibility Card (Native) | Rate Control (Native), and an older image |
+| Intelligence | Intelligence Card (Native) | Gross Payments (Native), and an older image |
+| Automation | Automation Card (Native) | — |
+
+Nothing was deleted as each version was replaced, which kept every step reversible during the build.
+
+<Callout>
+  <p><strong>Worth a cleanup pass before launch.</strong> That is six hidden visuals carrying real weight in the file. Once you are confident the current cards are final, deleting the superseded ones will make the home page meaningfully easier to work on. Confirm version history is intact first, and do it on a branch.</p>
+</Callout>
+
+## 4. The Scrolling Accordion
+
+Also on the home page — a scroll-driven section that expands one panel at a time. Three variants, one per open panel.
+
+<Figure src="/clients/justifi/guides/animated-product-demos/7.png" alt="Scrolling Accordion, first variant: the open panel reads Secure and tokenize customer data, with a dotted lock icon and the line Your data foundation — everything builds from here, above two collapsed panels that show only dotted arrow icons." caption="Scrolling Accordion, first variant" />
+
+## 5. The Onboarding Matrix
+
+On `/sub-account-onboarding`. Not a product mockup but built the same way — a native, animated data view rather than an image of a table.
+
+<Figure src="/clients/justifi/guides/animated-product-demos/8.png" alt="Onboarding Matrix, Sole Prop / Single-Member LLC variant: a green tab pill above three green column headings, Business info, One representative, and Bank account. The rest of the capture is blank white." caption="Onboarding Matrix, Sole Prop / Single-Member LLC variant" />
+
+Five variants, one per business type: **Sole Prop · Single-Member LLC**, **Multi-Member LLC · Corp**, **Non-Profits**, **Government Entities**, and **Individuals**. Selecting a type swaps the variant, so the requirements are one component rather than five separate tables.
+
+Because it is real text rather than an image, the requirements are readable by search engines and screen readers — which matters more here than on a decorative visual.
+
+## 6. The solutions pages
+
+Each of the three `/solutions/*` pages carries a **FlowLoop** instance — the only true code component on the site, rendering a looping flow animation.
+
+Two of them also carry a native **Rate Control Card**: `/solutions/vertical-software` and `/solutions/insurtech-mga`.
+
+<Callout>
+  <p><strong>No Rate Control Card on the franchise page.</strong> <code>/solutions/vertical-software</code> and <code>/solutions/insurtech-mga</code> both have one; <code>/solutions/franchise</code> does not. That is very likely an oversight rather than a decision — worth either adding one for consistency or confirming it was deliberate.</p>
+</Callout>
+
+## The animation, and how it works
+
+Each demo has roughly **20 or more animated elements**, staggered from about `0.07s` to `0.85s` and fully settled inside a second. The order tells a small story: the sidebar arrives, then the logo, then the menu items slide in one by one, then the stat tiles, then the body.
+
+Two things to know before editing:
+
+- **The entrance fires once, when the element scrolls into view.** Switching tabs does *not* replay it — that transition is Framer morphing between variants, which is why tab switching feels smooth rather than restarting.
+- **Framer cannot animate height.** Bars that appear to grow from a baseline are actually sliding upward inside a frame with clipping turned on, each offset by exactly its own height so it starts fully hidden. If you resize a bar, update its animation offset too, or it will start partly visible.
+
+## Editing safely
+
+**Changing a number or a label** is safe — select the text and edit it. Do it on the primary variant where possible.
+
+**Adding or removing a row** changes the height, which is fine, but check tablet width afterwards.
+
+**Changing a color** should use the product color styles — JustPay green for Payments, JustGrow coral for Payables, JustMove blue for Beyond Payments. One rule worth preserving: **an avatar or status tint reflects that row's own state, not the demo's accent color.**
+
+<Callout>
+  <p><strong>Always check all three tabs after any edit to Product Demo.</strong> The three bodies are stacked siblings with two hidden, so it is very easy to edit the Payments body while thinking you are looking at Payables. The canvas will happily let you.</p>
+</Callout>

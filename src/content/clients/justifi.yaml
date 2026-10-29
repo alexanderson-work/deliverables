@@ -1,0 +1,207 @@
+name: JustiFi
+summary: Finished brand assets for JustiFi’s updated visual identity, and the guidebook for running the website in Framer.
+
+project:
+  - label: Scope
+    value: Visual identity and website
+  - label: Website platform
+    value: Framer
+  - label: Last updated
+    value: September 3, 2026
+  - label: Designer
+    value: Alex Anderson
+    href: https://alexanderson.work
+
+brand:
+  intro: >-
+    JustiFi’s brand is evolving from a literal mark to a meaningful one. The new icon resolves the old cluster of
+    dots into the proof symbol, ∴, the sign for therefore. It signals what JustiFi delivers: not “trust us,” but proven.
+  downloads:
+    - { label: Download brand kit, href: /clients/justifi/brand/justifi-brand-kit.zip }
+    - { label: Brand guidelines (PDF), href: /clients/justifi/brand/justifi-brand-guidelines.pdf }
+  grounds:
+    light: "#FFFFFF"
+    dark: "#0D1A27"
+  assets:
+    - group: Primary logo
+      description: >-
+        The full brand lockup, including both the icon and word mark. Use it in primary brand settings, and wherever
+        people will be meeting the brand for the first time.
+      columns: 3
+      items:
+        - name: Navy and amber
+          preview: /clients/justifi/brand/primary-logo-navy-amber.svg
+          files:
+            - { label: SVG, href: /clients/justifi/brand/primary-logo-navy-amber.svg }
+            - { label: PNG, href: /clients/justifi/brand/primary-logo-navy-amber.png }
+        - name: White and amber
+          preview: /clients/justifi/brand/primary-logo-white-amber.svg
+          ground: dark
+          files:
+            - { label: SVG, href: /clients/justifi/brand/primary-logo-white-amber.svg }
+            - { label: PNG, href: /clients/justifi/brand/primary-logo-white-amber.png }
+        - name: Navy
+          preview: /clients/justifi/brand/primary-logo-navy.svg
+          files:
+            - { label: SVG, href: /clients/justifi/brand/primary-logo-navy.svg }
+            - { label: PNG, href: /clients/justifi/brand/primary-logo-navy.png }
+        - name: White
+          preview: /clients/justifi/brand/primary-logo-white.svg
+          ground: dark
+          files:
+            - { label: SVG, href: /clients/justifi/brand/primary-logo-white.svg }
+            - { label: PNG, href: /clients/justifi/brand/primary-logo-white.png }
+        - name: Black
+          preview: /clients/justifi/brand/primary-logo-black.svg
+          files:
+            - { label: SVG, href: /clients/justifi/brand/primary-logo-black.svg }
+            - { label: PNG, href: /clients/justifi/brand/primary-logo-black.png }
+    - group: Logo animation
+      description: >-
+        The mark also moves. Rather than rest in the apex-up “therefore” position, it pivots to face right: the cue for
+        forward, the next move.
+      columns: 2
+      items:
+        - name: Navy
+          preview: /clients/justifi/brand/logo-animation-navy-preview.mp4
+          poster: /clients/justifi/brand/logo-animation-navy-poster.jpg
+          files:
+            - { label: Lottie, href: /clients/justifi/brand/logo-animation-navy.json }
+            - { label: WebM, href: /clients/justifi/brand/logo-animation-navy.webm }
+            - { label: MOV, href: "https://drive.google.com/file/d/1jlgYrVcHyR5nlWxnzRvuy938DWcP4nLn/view" }
+    - group: Word mark
+      description: >-
+        A slightly modified word mark from Mulish Black, with rounded dots on the i’s to play well with the brand icon.
+        Use it in legal, internal, or other places where the name matters more than the full logo.
+      columns: 3
+      items:
+        - name: Navy and amber
+          preview: /clients/justifi/brand/word-mark-navy-amber.svg
+          files:
+            - { label: SVG, href: /clients/justifi/brand/word-mark-navy-amber.svg }
+            - { label: PNG, href: /clients/justifi/brand/word-mark-navy-amber@4x.png }
+        - name: White and amber
+          preview: /clients/justifi/brand/word-mark-white-amber.svg
+          ground: dark
+          files:
+            - { label: SVG, href: /clients/justifi/brand/word-mark-white-amber.svg }
+            - { label: PNG, href: /clients/justifi/brand/word-mark-white-amber@4x.png }
+        - name: Navy
+          preview: /clients/justifi/brand/word-mark-navy.svg
+          files:
+            - { label: SVG, href: /clients/justifi/brand/word-mark-navy.svg }
+            - { label: PNG, href: /clients/justifi/brand/word-mark-navy@4x.png }
+        - name: White
+          preview: /clients/justifi/brand/word-mark-white.svg
+          ground: dark
+          files:
+            - { label: SVG, href: /clients/justifi/brand/word-mark-white.svg }
+            - { label: PNG, href: /clients/justifi/brand/word-mark-white@4x.png }
+        - name: Black
+          preview: /clients/justifi/brand/word-mark-black.svg
+          files:
+            - { label: SVG, href: /clients/justifi/brand/word-mark-black.svg }
+            - { label: PNG, href: /clients/justifi/brand/word-mark-black@4x.png }
+    - group: Brand icon
+      description: >-
+        For smaller applications, where the brand needs to be identified but not explained, and anywhere that demands
+        the smallest form factor.
+      columns: 4
+      items:
+        - name: Amber
+          preview: /clients/justifi/brand/brand-icon-amber.svg
+          files:
+            - { label: SVG, href: /clients/justifi/brand/brand-icon-amber.svg }
+            - { label: PNG, href: /clients/justifi/brand/brand-icon-amber@4x.png }
+        - name: Navy
+          preview: /clients/justifi/brand/brand-icon-navy.svg
+          files:
+            - { label: SVG, href: /clients/justifi/brand/brand-icon-navy.svg }
+            - { label: PNG, href: /clients/justifi/brand/brand-icon-navy@4x.png }
+        - name: White
+          preview: /clients/justifi/brand/brand-icon-white.svg
+          ground: dark
+          files:
+            - { label: SVG, href: /clients/justifi/brand/brand-icon-white.svg }
+            - { label: PNG, href: /clients/justifi/brand/brand-icon-white@4x.png }
+        - name: Black
+          preview: /clients/justifi/brand/brand-icon-black.svg
+          files:
+            - { label: SVG, href: /clients/justifi/brand/brand-icon-black.svg }
+            - { label: PNG, href: /clients/justifi/brand/brand-icon-black@4x.png }
+    - group: Social
+      description: Ready-made images for JustiFi’s social profiles.
+      columns: 2
+      items:
+        - name: LinkedIn banner
+          preview: /clients/justifi/brand/linkedin-banner.png
+          ground: image
+          files:
+            - { label: PNG, href: /clients/justifi/brand/linkedin-banner.png }
+        - name: Profile image
+          preview: /clients/justifi/brand/profile-image.png
+          ground: image
+          files:
+            - { label: PNG, href: /clients/justifi/brand/profile-image.png }
+        - name: Profile image, alternate
+          preview: /clients/justifi/brand/profile-image-alt.png
+          ground: image
+          files:
+            - { label: PNG, href: /clients/justifi/brand/profile-image-alt.png }
+  colors:
+    - name: Navy
+      hex: "#0D1A27"
+      cmyk: 43 36 18 52
+      usage: The base. Backgrounds, text, and the logo.
+    - name: Brand Amber
+      hex: "#FFA000"
+      cmyk: 0 49 84 0
+      usage: Branding and calls to action.
+    - name: JustCloak teal
+      hex: "#0097A7"
+      cmyk: 58 27 44 0
+      usage: Accent. The JustCloak product color.
+    - name: JustPay green
+      hex: "#4BB87A"
+      cmyk: 60 3 80 0
+      usage: Accent. The JustPay product color.
+    - name: JustMove blue
+      hex: "#4A90D9"
+      cmyk: 71 41 8 0
+      usage: Accent. The JustMove product color.
+    - name: JustGrow coral
+      hex: "#FF8A65"
+      cmyk: 0 46 60 0
+      usage: Accent. The JustGrow product color.
+  colorNote: Use the primary navy as a base, amber for branding and calls to action, and accent colors sparingly when they add value.
+  type:
+    - name: Mulish Bold
+      role: Headlines
+      description: Headings and statement copy, such as ads and signage. One weight lighter than the Mulish Black used in the word mark.
+      href: https://fonts.google.com/specimen/Mulish
+    - name: Lato Regular
+      role: Body
+      description: Anywhere there’s more than a full sentence of copy, and in standard UI elements.
+      href: https://fonts.google.com/specimen/Lato
+
+resources:
+  - group: Brand files
+    items:
+      - title: Brand asset folder
+        description: All brand assets, brand guidelines, and GTM assets in PNG and SVG.
+        href: https://drive.google.com/drive/folders/1UCdNi4tkiekCY7aaUXlP7GZD6Br8uM8-?usp=sharing
+        meta: Google Drive
+      - title: Brand guidelines
+        description: The 15-page guide to the icon, word mark, logo, type, and color.
+        href: /clients/justifi/brand/justifi-brand-guidelines.pdf
+        meta: PDF
+  - group: Figma
+    items:
+      - title: JustiFi visual identity
+        description: The full visual identity, in Figma.
+        href: https://www.figma.com/design/50QZpESiIdh5AAWYTnvUgl/JustiFi-Visual-Identity?node-id=0-1
+        meta: Figma design
+      - title: JustiFi brand guidelines
+        description: The guidelines as a Figma Slides deck.
+        href: https://www.figma.com/slides/TdEHay5OPUQDJDMVESrbf4
+        meta: Figma Slides

@@ -1,0 +1,73 @@
+---
+title: "The Dotted Icons Library"
+summary: "JustiFi's custom icon set — all 34 glyphs, how to use them, and how to draw new ones."
+section: "Design system"
+order: 8
+duration: "4 min read"
+updated: 2026-09-04
+---
+
+<Callout>
+  <p><strong>Dotted Icons</strong> is a custom icon set built specifically for JustiFi. Every glyph is drawn from uniform circular dots on a fixed grid — it is one of the most distinctive parts of the brand's expression on the site, and it is not something you can buy or download.</p>
+</Callout>
+
+<Callout>
+  <p><strong>Framer Academy — free video lessons</strong></p>
+  <p><a href="https://www.framer.com/academy/courses/mastering-vectors-in-framer">Vectors in Framer (full course)</a> — useful if you ever need to edit a glyph directly in Framer rather than in Figma</p>
+</Callout>
+
+## Where it lives
+
+The set is installed in the Framer project alongside the stock sets (Flowbite, Phosphor, Logos). Insert an icon and pick **Dotted Icons** from the set dropdown.
+
+There is also a second custom set called **Patterns**, which holds a single decorative vector used for background texture. It defaults to Dark Navy rather than amber.
+
+## The 34 glyphs
+
+| Group | Icons |
+| --- | --- |
+| **Navigation & structure** | Arrow, Expand, Chevron Up, Chevron Down, Steps, Split, Repeat, Layers |
+| **Money & payments** | Cash, Card, Dollar, Percent, Wallet, Vault, Bank |
+| **Data & reporting** | Chart, Database, Document, Export, Sliders, API, Tag |
+| **Trust & status** | Security, Check, Check Circle, Umbrella, Eye, Clock, Bolt, Broken Link |
+| **People & communication** | Users, Chat, Quote, Globe |
+
+## Using an icon
+
+Every Dotted icon has exactly two controls in the right-hand panel:
+
+| Control | What it does |
+| --- | --- |
+| **Icon** | Which glyph to show. Swap it here — you never need to delete and re-insert. |
+| **Fill** | The color. Defaults to **Brand Amber**. On this site it is also set to the four product colors (JustPay green, JustMove blue, JustGrow coral, JustCloak teal) to color-code sections. |
+
+### Sizing
+
+The dotted glyphs are wider and airier than a typical line icon, so they need roughly **25% more size** than a stock icon to feel visually equivalent. The sizes used across the site are `24`, `26`, `30`, `32`, `38`, and `46`. Stick to those rather than inventing new ones.
+
+Do not scale a glyph below about `24px` — below that the dots start to merge and the shape stops reading.
+
+## The design rules behind the set
+
+If you or an agency ever draw a new glyph, these are the constraints that make it belong:
+
+- **Every dot is a 6px circle.** Never resize individual dots.
+- **Dots sit on an 8px grid**, with a minimum of roughly `7.8px` from center to center. On diagonals that works out to `8.25`–`8.49px`. Anything tighter and the dots visually fuse.
+- **Enlarge the glyph, never crowd the dots.** If a shape needs more detail, make the canvas bigger.
+- **Interior detail needs room.** A glyph with marks inside a circle (a clock face, a globe's meridians) needs at least a 12-dot ring on a `38px` canvas, or `46px` if something like a check sits inside it.
+- **At small sizes, only open single-dot strokes or a solid band survive.** Scattered interior marks turn to mush.
+- **Arrowheads** use a tip plus two barbs about `10px` back, with the shaft stopping around `11px` short of the tip.
+
+## Adding a new icon
+
+The master artwork lives in a separate Figma file, **"JustiFi: Dotted Icons"**, where each glyph is a frame of individually editable circles.
+
+1. Draw the new glyph in the Figma file, following the rules above.
+2. Check its silhouette against the existing set — box-shaped glyphs in particular (Vault, Wallet, Card) are easy to accidentally duplicate.
+3. Right-click the frame in Figma and **Copy as SVG**.
+4. In Framer, open the Dotted Icons set editor and paste it in as a new icon.
+5. Name it, then confirm it renders correctly at `24px` before using it.
+
+<Callout>
+  <p>The fastest sanity check on a new glyph is to look at it small. If you cannot tell what it is at <code>24px</code>, the dots are too close together or the glyph is carrying too much interior detail.</p>
+</Callout>

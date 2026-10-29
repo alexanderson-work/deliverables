@@ -1,0 +1,113 @@
+---
+title: "Using the Framer CMS"
+summary: "The four collections, every field, and how to add, edit, and publish content."
+section: "Managing content"
+order: 4
+duration: "4 min read"
+updated: 2026-09-04
+---
+
+<Callout>
+  <p>The CMS is where all repeating content lives — updates, customer stories, FAQs, and legal pages. Adding an item here creates or updates content on the site automatically. <strong>This is the part of the site you can safely edit without design knowledge.</strong></p>
+</Callout>
+
+<Callout>
+  <p><strong>Framer Academy — free video lessons</strong></p>
+  <p><a href="https://www.framer.com/academy/courses/getting-started-with-framer-cms">Framer CMS Basics (full course)</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/what-is-framer-cms">What is the Framer CMS?</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/understanding-cms-collections-items-fields">CMS collections, items &amp; fields</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/cms-pages-dynamic-content">CMS pages &amp; dynamic content</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/creating-cms-collection-lists">Utilizing collection lists</a></p>
+</Callout>
+
+## How the CMS works
+
+Three ideas:
+
+- A **collection** is a content type — a table of the same kind of thing. This site has four.
+- An **item** is one row: one update, one customer, one FAQ.
+- A **field** is one column: a title, a date, a rich-text body.
+
+The design pulls from those fields in two ways:
+
+- **Detail pages** — a template page like `/updates/:slug` is designed once and rendered for every item.
+- **Collection lists** — a repeating list on a page (the updates feed, the FAQ accordion) that pulls in items and can be filtered.
+
+Find it all under the **CMS** tab in the left panel.
+
+## The four collections
+
+### Updates — 14 items
+
+Product releases, company news, and editorial posts. Feeds the `/updates` index and generates a detail page per item at `/updates/:slug`.
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| Title | Text | Yes | Also drives the page title and the slug |
+| Slug | Text | — | The URL segment. Auto-generated from Title. |
+| Date | Date | Yes | Displayed on the row and the detail page |
+| Summary | Text | Yes | Shown under the headline on the detail page |
+| Category | Option | — | Product, Company, or Insights. Drives the filter chips. |
+| CTA Label | Text | Yes | Button text at the end of the post |
+| CTA Link | Link | Yes | Where that button goes |
+| Body | Rich text | Yes | The post itself — headings, paragraphs, lists |
+| Author | Text | Yes | |
+| Read Time | Text | Yes | Written manually, e.g. "4 min read" |
+
+### Customers — 3 items
+
+Customer stories. Feeds the `/customers` index, the case study block on the solutions pages, and a detail page per item at `/customers/:slug`.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| Company | Text | |
+| Headline | Text | The story's hook |
+| Summary | Text | |
+| Vertical | Option | Vertical Software, Franchise, or InsurTech & MGA |
+| Featured | Checkbox | |
+| Products Used | Text | |
+| Hero Image / Logo | Image | |
+| Stat 1–3 Value / Label | Text | Six fields making up the three-stat row |
+| Quote / Quote Name / Quote Role | Text | |
+| Body | Rich text | The full story |
+
+<Callout>
+  <p><strong>All three customers are currently tagged <code>Vertical Software</code>.</strong> The case study blocks on the InsurTech and Franchise pages therefore show a placeholder story chosen by position rather than by vertical. Once real stories exist for those verticals, tag them and switch each block's list to filter on <strong>Vertical</strong> — a one-setting change per page.</p>
+</Callout>
+
+### FAQs — 22 items
+
+Feeds the FAQ Block at the bottom of five pages. Has **no detail page** — these only ever appear inside an accordion.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| Question | Text | The accordion header |
+| Answer | Text | The revealed answer |
+| Category | Option | Products, Why JustiFi, Vertical Software, Insurtech & MGA's, Franchise Networks |
+
+**Category is what routes each question to a page.** The FAQ Block on `/products` shows only items tagged Products, the block on `/why-justifi` shows only Why JustiFi, and so on. To add a question to a page, create the item and set its Category — nothing on the page itself needs touching.
+
+<Callout>
+  <p>The current 22 FAQs are <strong>drafted placeholders</strong>. They should be reviewed and replaced with approved copy before launch — particularly anything touching compliance, PCI, registered-PayFac status, or go-live timing.</p>
+</Callout>
+
+### Legal — 3 items
+
+Merchant Agreement, Terms of Service, and Privacy Policy. Rendered at `/legal/:slug` and linked from the footer. Fields: Title, Summary, Last Updated Date, Body (rich text), Slug.
+
+## Adding or editing an item
+
+1. Open the **CMS** tab and pick the collection.
+2. **New** to add an item, or click an existing row to edit it.
+3. Fill the fields. Anything marked required must have a value before the item will render properly.
+4. Check the **Slug** — see the warning below.
+5. **Publish** the site. CMS changes are not live until you publish, the same as design changes.
+
+<Callout>
+  <p><strong>Changing a Slug on a published item breaks its URL.</strong> The old address will 404 and any external link or search result pointing at it dies. If you must rename one after launch, add a redirect from the old path under Site Settings.</p>
+</Callout>
+
+## Two things to know about ordering
+
+- **The Updates feed is in manual order.** It is not sorted by Date automatically. New posts land at the bottom of the collection and have to be dragged to the top, or a sort set on the list itself.
+- **Category filtering is built into the components**, not into the collection. The Updates Feed component has one variant per category and the FAQ Block has one per page. If you add a new category to either collection, someone needs to add a matching variant for it to appear anywhere.

@@ -1,0 +1,128 @@
+---
+title: "Publishing & Version History"
+summary: "How changes go live, how to use branches, and how to get an earlier version back."
+section: "Getting started"
+order: 3
+duration: "6 min read"
+updated: 2026-09-04
+---
+
+<Callout>
+  <p>Nothing you change in Framer is live until you publish. Everything you have edited since the last publish — design, content, CMS items, settings — goes out together, in one action. <strong>There is no way to publish a single page.</strong></p>
+</Callout>
+
+<Callout>
+  <p><strong>Framer Academy — free video lessons</strong></p>
+  <p><a href="https://www.framer.com/academy/lessons/staging-versions">Staging &amp; Versions</a> — the deploy and rollback flow described below</p>
+  <p><a href="https://www.framer.com/academy/courses/fundamentals">Framer Fundamentals (full course)</a> — covers the publish flow alongside the rest of the basics</p>
+</Callout>
+
+## The two states of the site
+
+| State | What it is |
+| --- | --- |
+| **Draft** | What you see in the editor. Every edit lands here immediately and is saved automatically. Only your team can see it. |
+| **Published** | What the public sees. It only changes when someone clicks Publish. |
+
+This is why you can leave a half-finished section on a page overnight without anyone seeing it — but also why a typo you fixed three weeks ago is still live if nobody has published since.
+
+## Staging
+
+<Callout>
+  <p><strong>Staging is enabled on this project.</strong> Publishing does <strong>not</strong> touch the production domain. It updates the staging site, and a separate <strong>Deploy</strong> step promotes a chosen version to production.</p>
+</Callout>
+
+With staging on, the two addresses do different jobs:
+
+| Address | What it shows |
+| --- | --- |
+| **The `.framer.app` base domain** | Always the most recent publish. This is the staging site — where you review work. |
+| **The custom domain** | Only ever the version someone explicitly deployed. It does not move on its own. |
+
+The gap between those two is the entire point. Publish as often as you like without any of it reaching customers, review on staging, and move production only when you decide to.
+
+### Deploying a version to production
+
+1. **Publish.** The staging site updates.
+2. **Review on the `.framer.app` URL.** This is the real rendered site, not a preview — it is the last honest check before customers see it.
+3. Open **project settings → Staging & Versions**.
+4. Click **Deploy** next to the version you want. That version becomes the custom domain.
+
+### Turning staging on or off
+
+The control is in **project settings → Staging & Versions**, via the **Enable Staging** option. The same tab is where you change it later.
+
+<Callout>
+  <p><strong>Turning staging off changes what the Publish button means.</strong> With staging enabled, Publish is a safe, reviewable action. With it disabled, Publish goes straight to the live custom domain with no review step and no deploy gate. Do not switch it off casually, and tell the whole team if you ever do — the habits in this doc assume it is on.</p>
+</Callout>
+
+### Protected staging
+
+Staging URLs can be public or protected. Set to **Protected**, only logged-in users with access to the project can open a staging link, which keeps unreleased work away from anyone who happens to have the URL.
+
+This project's staging URL currently asks for a Framer login, so protection appears to be on. That is the right setting for a site with unreleased pages in it — but it does mean anyone you want to review staging needs project access first.
+
+## Publishing, step by step
+
+1. **Preview first.** The Preview button opens the site in a real browser view. The canvas is a static approximation — it does not run hover states, scroll animations, the mobile menu, or any of the code overrides. If you have not seen a change in Preview, you have not tested it.
+2. **Check all three breakpoints.** Resize the preview window, or use the breakpoint controls. Phone is where things break.
+3. **Run the checklist below.**
+4. **Click Publish.** Framer shows you what has changed and flags any errors that would block the publish.
+5. **Load the live site and look at it.** Publishing succeeds and the page is still wrong more often than you would like.
+
+## Pre-publish checklist
+
+Tuned to the things that actually go wrong on this site:
+
+- [ ] Previewed at Desktop, Tablet, and Phone
+- [ ] **Opened the mobile menu.** The phone nav is built separately from the desktop nav, so a nav change made in one place is missing from the other until you check
+- [ ] Any new text uses a **shared text style**, not a typed-in font size
+- [ ] Any new color comes from a **color style**, not a pasted hex value
+- [ ] New CMS items have every required field filled
+- [ ] No **slug** was changed on an already-published CMS item (that breaks its URL — see the [CMS doc](../using-the-framer-cms/))
+- [ ] Anything with a code override still animates in Preview
+- [ ] Content edits were made on **Desktop**, not on a Tablet or Phone breakpoint
+
+## Branches
+
+Framer supports branches, the same idea as in code: a separate copy of the project where you can work without touching what's live.
+
+**Use one whenever the work is bigger than a text fix** — a new page, a redesigned section, a CMS restructure, or anything an AI agent is doing. The whole of this site was built on branches.
+
+| Action | What happens |
+| --- | --- |
+| **Create a branch** | Takes a snapshot of main. Your edits happen only there. |
+| **Publish a branch preview** | Gives you a shareable URL for review. It does **not** touch the live site — this is the safe way to show someone work in progress. |
+| **Merge into main** | Brings the work back into the main project. Still not live until you publish main. |
+| **Delete a branch** | Throws the work away. This is the real value: an experiment that goes wrong costs nothing. |
+
+Switch branches from the branch menu at the top of the editor. **Check which branch you are on before you start editing** — making an hour of changes on the wrong branch is the classic mistake.
+
+## Version history
+
+Framer keeps a running history of the project, separate from branches. Open it from the project menu.
+
+- Every published version is kept, and the draft is checkpointed as you work.
+- You can **open** an earlier version to look at it before deciding anything.
+- You can **restore** one, which brings the project back to that state.
+- Restoring changes the draft, not the live site. **You still have to publish** for a restore to reach the public.
+
+<Callout>
+  <p><strong>Undo comes first.</strong> <Kbd>Cmd</Kbd> <Kbd>Z</Kbd> covers almost everything, including CMS edits, and is instant. Version history is for the cases undo cannot reach — something noticed days later, or damage spread across many pages.</p>
+</Callout>
+
+## Rolling back a bad publish
+
+1. Open version history and find the last version you know was good.
+2. Open it and confirm it is actually the one you want.
+3. Restore it.
+4. **Publish.** Until you do, the bad version is still the live one.
+
+Because staging is enabled, there is a much faster route for anything already live: open **project settings → Staging & Versions** and **Deploy** the last good version straight to the custom domain. Production reverts immediately and your draft is left untouched, so you can fix the problem properly without time pressure. Prefer this over restoring.
+
+## Things that catch people out
+
+- **CMS changes need a publish too.** Adding an update or a customer story does not put it live on its own.
+- **Publishing is all-or-nothing.** If a colleague has an unfinished section in the draft, your publish ships it as well. Coordinate, or work on branches.
+- **Site Settings changes** — redirects, metadata, custom code, the form recipient — also require a publish.
+- **A successful publish is not proof the page is right.** Always load the live URL afterwards.

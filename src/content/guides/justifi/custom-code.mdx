@@ -1,0 +1,78 @@
+---
+title: "Custom Code on the Site"
+summary: "The four code files, what each does, exactly where it's applied, and what not to break."
+section: "Technical reference"
+order: 10
+duration: "4 min read"
+updated: 2026-09-04
+---
+
+<Callout>
+  <p>The site is <strong>almost entirely native Framer</strong>. There are only four code files, each doing one small job that the canvas cannot express on its own. Nothing structural depends on code — if every file here were removed, the site would still render, just with less motion.</p>
+</Callout>
+
+## Two kinds of code in Framer
+
+- **Code overrides** wrap an existing canvas element and add behavior to it. The element stays fully designed in Framer; the override just adds motion or logic. Applied per element via the **Code Override** field in the right panel.
+- **Code components** are React components that render their own output. Inserted like any other component.
+
+Both live under **Assets → Code** in the left panel.
+
+## The four files
+
+### WithMouseParallax.tsx
+
+**Type:** Two overrides — `withMouseParallax` and `withMouseParallaxInverted`
+
+**Applied to:** The home page hero, on two layers named **Gradient 1** and **Gradient 2**, at all three breakpoints.
+
+Moves the two background gradient blobs in response to the cursor. One layer uses the standard override and the other the inverted one, so they drift in opposite directions and the hero gets a subtle sense of depth. Purely decorative.
+
+### WithChipDrift.tsx
+
+**Type:** Two overrides — `withChipDrift` and `withChipDriftInverted`
+
+**Applied to:** Four elements on `/why-justifi`, at all three breakpoints.
+
+The same idea applied to the chip elements on that page — paired normal and inverted so they drift against each other rather than in unison. Also decorative.
+
+### WithSubmitNewTab.tsx
+
+**Type:** One override — `withSubmitNewTab`
+
+**Applied to:** The contact form on `/get-started`, at all three breakpoints.
+
+This one is functional, not decorative. It changes what happens when the form submits.
+
+<Callout>
+  <p><strong>This is the only piece of code on the site that touches a real user action.</strong> If contact form submissions ever misbehave, check this override before anything else. Test the form end to end after any change to it, and note that the form's recipient is configured separately in Framer's Site Settings, not in this file.</p>
+</Callout>
+
+### FlowLoop.tsx
+
+**Type:** Code component — `FlowLoop`
+
+**Applied to:** One instance on each of the three solutions pages: `/solutions/vertical-software`, `/solutions/insurtech-mga`, and `/solutions/franchise`.
+
+A looping flow animation. It is the only true code component in the project; everything else visual is built natively on the canvas.
+
+## Site-wide custom code
+
+Separately from these files, Framer has slots for raw HTML and script tags that get injected into every page. Find them under **Site Settings → General → Custom Code**, split into head and body sections.
+
+This is where analytics and marketing tags belong — HubSpot tracking, Google Analytics, LinkedIn or ad pixels.
+
+<Callout>
+  <p><strong>Marketing and analytics scripts are owned by JustiFi's marketing team.</strong> They were deliberately left untouched during the site build. Before editing anything in the site-wide custom code slots, check with whoever owns the martech stack — removing a tag here silently breaks attribution and campaign reporting, and nothing on the site will look wrong.</p>
+</Callout>
+
+## Before you change any of this
+
+1. **Read the file first.** The descriptions above are accurate about type and placement, but the source is the authority on exact behavior.
+2. **Work on a branch.** A broken override can throw an error on every page it touches.
+3. **Check every breakpoint.** All of these overrides are applied three times — once per breakpoint — so a change affects desktop, tablet, and phone independently.
+4. **Preview, don't trust the canvas.** None of this motion runs on the canvas. If you have not seen it in Preview, you have not tested it.
+
+<Callout>
+  <p><strong>Removing an override is safe and reversible.</strong> Clear the Code Override field on the element and the element goes back to being plain — static instead of animated. Nothing else breaks. That makes it a good first diagnostic step if a page starts behaving oddly.</p>
+</Callout>

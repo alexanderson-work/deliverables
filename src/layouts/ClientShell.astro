@@ -1,0 +1,82 @@
+---
+import {
+  Breadcrumbs,
+  Sidebar,
+  SidebarFoot,
+  SidebarHead,
+  SidebarItem,
+  SidebarLabel,
+  SidebarNav,
+} from "@noorddev/vlak-react";
+import { ThemeToggle } from "@noorddev/vlak-react/components/theme-toggle";
+import Base from "./Base.astro";
+import MobileNav from "../components/MobileNav";
+import { clientNav } from "../components/ClientNav";
+import { clientUrl, type Client } from "../lib/content";
+import { siteTitle, studio } from "../site.config";
+
+interface Props {
+  client: Client;
+  /** Page title; omit on the overview. */
+  title?: string;
+  description?: string;
+  /** Breadcrumb trail after the client name. */
+  trail?: { label: string; href?: string }[];
+}
+
+const { client, title, description, trail = [] } = Astro.props;
+const home = clientUrl(client);
+const current = Astro.url.pathname;
+const groups = await clientNav(client);
+const crumbs = [{ label: client.data.name, href: trail.length ? home : undefined }, ...trail];
+const here = title ?? "Overview";
+---
+
+<Base title={`${title ? `${title} · ` : ""}${client.data.name} · ${siteTitle}`} description={description}>
+  <div class="shell">
+    <div class="shell-rail">
+      <Sidebar>
+        <SidebarHead><a href={home}>{client.data.name}</a></SidebarHead>
+        <SidebarNav aria-label="Client space">
+          {
+            groups.map((group) => (
+              <>
+                {group.label && <SidebarLabel>{group.label}</SidebarLabel>}
+                {group.items.map((item) => (
+                  <SidebarItem href={item.href} current={item.href === current}>
+                    {item.label}
+                  </SidebarItem>
+                ))}
+              </>
+            ))
+          }
+        </SidebarNav>
+        <SidebarFoot>
+          <span>Prepared by</span>
+          <a href={studio.url} style="color: var(--text); text-decoration: none">{studio.name}</a>
+        </SidebarFoot>
+      </Sidebar>
+    </div>
+
+    <div class="shell-main">
+      <header class="page-top">
+        <Breadcrumbs items={crumbs} />
+        <ThemeToggle className="rs-theme-toggle-inline" client:idle />
+      </header>
+      <div class="mobile-top">
+        <MobileNav
+          client:media="(max-width: 1023px)"
+          clientName={client.data.name}
+          home={home}
+          here={here}
+          current={current}
+          groups={groups}
+          studio={studio}
+        />
+      </div>
+      <main class="page" id="main">
+        <slot />
+      </main>
+    </div>
+  </div>
+</Base>

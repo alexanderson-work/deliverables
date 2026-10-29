@@ -1,0 +1,51 @@
+---
+import { MediaPlayer } from "@noorddev/vlak-react/components/media-player";
+
+interface Props {
+  title: string;
+  src: string;
+  poster?: string;
+  captions?: string;
+}
+
+const { title, src, poster, captions } = Astro.props;
+
+/** Turn a share link from Loom, YouTube, or Vimeo into its embed URL. */
+function embedUrl(link: string): string | undefined {
+  let url: URL;
+  try {
+    url = new URL(link);
+  } catch {
+    return undefined;
+  }
+  const host = url.hostname.replace(/^www\./, "");
+  const parts = url.pathname.split("/").filter(Boolean);
+  if (host === "loom.com" && parts[0] === "share") return `https://www.loom.com/embed/${parts[1]}`;
+  if (host === "youtu.be") return `https://www.youtube-nocookie.com/embed/${parts[0]}`;
+  if (host === "youtube.com" && url.searchParams.get("v"))
+    return `https://www.youtube-nocookie.com/embed/${url.searchParams.get("v")}`;
+  if (host === "vimeo.com" && parts[0]) return `https://player.vimeo.com/video/${parts[0]}`;
+  return undefined;
+}
+
+const embed = embedUrl(src);
+const tracks = captions ? [{ src: captions, srcLang: "en", label: "English", default: true }] : undefined;
+---
+
+<div class="video">
+  {
+    embed ? (
+      <div class="video-frame">
+        <iframe
+          src={embed}
+          title={title}
+          loading="lazy"
+          allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+          allowfullscreen
+        />
+      </div>
+    ) : (
+      <MediaPlayer client:visible kind="video" src={src} title={title} poster={poster} preload="metadata" tracks={tracks} />
+    )
+  }
+</div>

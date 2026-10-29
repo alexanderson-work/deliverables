@@ -1,0 +1,81 @@
+---
+title: "Colors & Text Styles"
+summary: "The ten color styles and twelve text styles that control the entire site's look."
+section: "Design system"
+order: 5
+duration: "4 min read"
+updated: 2026-09-04
+---
+
+<Callout>
+  <p>Every color and every piece of type on this site comes from a <strong>shared style</strong>, not from a value typed into a single element. Change the style and every place it is used updates at once. This is the single most important convention in the project — keeping to it is what stops the site drifting over time.</p>
+</Callout>
+
+## Color styles
+
+Ten styles, found under the **Assets** tab in the left panel.
+
+| Style | Hex | RGB | What it's for |
+| --- | --- | --- | --- |
+| **Navy** | `#0D1A27` | `13, 26, 39` | The page background on every page. Set by the layout template. |
+| **Dark Navy** | `#09141F` | `9, 20, 31` | Recessed surfaces — the footer, form inputs. Reads as "below" the page. |
+| **Light Navy** | `#152C42` | `21, 44, 66` | Raised surfaces — cards and panels. Reads as "above" the page. |
+| **White** | `#FFFFFF` | `255, 255, 255` | All body and heading text. |
+| **Brand Amber** | `#FFA000` | `255, 160, 0` | The primary accent — CTAs, icons, highlights, key numbers. |
+| **Amber Hover** | `#FFCD75` | `255, 205, 117` | The hover state for amber buttons. Only ever used for that. |
+
+### The four product colors
+
+Each maps to a JustiFi product and is used to color-code its section, icon, and supporting visuals.
+
+| Style | Hex | Reads as |
+| --- | --- | --- |
+| **JustPay** | `#4BB87A` | Green |
+| **JustMove** | `#4A90D9` | Blue |
+| **JustGrow** | `#FF8A65` | Coral |
+| **JustCloak** | `#0097A7` | Teal |
+
+### Transparency
+
+White at reduced opacity does most of the quiet work — secondary labels sit at 60%, hairline borders and dividers at around 10–14%. These are applied per element rather than saved as styles, because the base color is always White.
+
+## Text styles
+
+Twelve styles. Two typefaces: **Mulish Bold** for headings, **Lato** for body text.
+
+Each style carries its own responsive sizing — one style, three sizes, switching automatically at the breakpoints. You never need to set a font size by hand.
+
+| Style | Font | Desktop | Tablet | Phone | HTML tag |
+| --- | --- | --- | --- | --- | --- |
+| Heading 1 | Mulish 700 | 56 | 45 | 34 | `h1` |
+| Heading 2 | Mulish 700 | 48 | 38 | 31 | `h2` |
+| Heading 3 | Mulish 700 | 42 | 34 | 27 | `h3` |
+| Heading 4 | Mulish 700 | 36 | 29 | 23 | `h3` |
+| Heading 5 | Mulish 700 | 32 | 26 | 20 | `h3` |
+| Heading 6 | Mulish 700 | 28 | 22 | 18 | `h3` |
+| Body L | Lato 400 | 22 | 19 | 16 | — |
+| Body | Lato 400 | 18 | 16 | 14 | — |
+| Body S | Lato 400 | 15 | 14 | 13 | — |
+| Button Text | Lato 700 | 18 | 16 | 14 | — |
+| Slider Text | Lato 700 | 18 | — | — | — |
+| Article Heading | Mulish 700 | 28 | 22 | 18 | `h2` |
+
+**Article Heading** exists so that headings inside CMS rich-text bodies render at a sensible article size rather than the site's 48px display Heading 2.
+
+Heading 4, 5 and 6 all emit `h3` on purpose. The heading styles are a **size ramp, not an outline** — Heading 6 alone is used for hundreds of card and feature titles, and those cards sit inside `h2` sections. Giving the three styles `h4`/`h5`/`h6` tags to match their names would break heading order across the site rather than improve it, so leave these tags as they are.
+
+## The conventions that keep it consistent
+
+### Never type a raw color or font size
+
+If you find yourself entering a hex value or a pixel size, stop — there is almost certainly a style for it. Raw values are invisible to a global change later and are how a design system quietly falls apart.
+
+### Labels are sentence case, never all-caps
+
+Small labels and eyebrows use **Body S** at 60% white opacity, in sentence case. There is no uppercase-with-letterspacing label style anywhere in the site chrome, and none should be added.
+
+The one exception is inside the **product mockups** (the dashboard visuals on the home and products pages), where all-caps stat labels are JustiFi's own in-product UI convention. Acronyms like BNPL, ACH, and RTP are obviously fine everywhere.
+
+### Applying a style clears inline formatting
+
+When you apply a text style to an element, Framer ignores any font settings that were set directly on it. If you see a note saying an inline style is being ignored, that is the system working as intended.

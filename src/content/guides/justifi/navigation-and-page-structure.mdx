@@ -1,0 +1,101 @@
+---
+title: "Navigation & Page Structure"
+summary: "Every page on the site, how the nav and footer are built, and how to add a page to either."
+section: "Getting started"
+order: 2
+duration: "4 min read"
+updated: 2026-09-04
+---
+
+<Callout>
+  <p>The site has <strong>16 pages</strong>: 11 standard pages, 3 CMS templates that generate pages automatically, a 404, and the home page.</p>
+</Callout>
+
+<Callout>
+  <p><strong>Framer Academy — free video lessons</strong></p>
+  <p><a href="https://www.framer.com/academy/courses/fundamentals">Framer Fundamentals (full course)</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/cms-pages-dynamic-content">CMS pages and dynamic content</a> — how the <code>:slug</code> template pages work</p>
+</Callout>
+
+## Every page on the site
+
+### Standard pages
+
+| Path | What it is |
+| --- | --- |
+| `/` | Home |
+| `/products` | Embedded payments product page. Has in-page anchors: `#payments`, `#payables`, `#beyond-payments`, `#trust` |
+| `/why-justifi` | Positioning page |
+| `/solutions/vertical-software` | Vertical software solutions page |
+| `/solutions/insurtech-mga` | InsurTech and MGA solutions page |
+| `/solutions/franchise` | Franchise networks solutions page |
+| `/customers` | Customer stories index |
+| `/updates` | Updates index — product releases, company news, and insights |
+| `/partner-hub` | Partner resources and links out to support portals |
+| `/security` | Security overview |
+| `/sub-account-onboarding` | Onboarding requirements, including the Onboarding Matrix component |
+| `/get-started` | Contact form |
+| `/404` | Not-found page |
+
+### CMS template pages
+
+These three are **templates**, not pages. Each one is designed once and Framer generates a real page for every item in the matching collection.
+
+| Template | Collection | Pages it generates today |
+| --- | --- | --- |
+| `/customers/:slug` | Customers | 3 |
+| `/updates/:slug` | Updates | 14 |
+| `/legal/:slug` | Legal | 3 |
+
+Add an item to a collection and its page appears at the matching URL. See the [Using the Framer CMS](../using-the-framer-cms/) doc.
+
+## The top navigation
+
+The nav is a component called **Navigation Bar**, placed once in the layout template so it appears on every page. It has three variants: Desktop, Phone Closed, and Phone Open.
+
+Its contents:
+
+| Item | Type | Goes to |
+| --- | --- | --- |
+| Logo | Link | `/` |
+| Products | Dropdown | Payments, Payables, Beyond Payments, Explore Products |
+| Resources | Dropdown | Why JustiFi, Developer Docs, Partner Hub |
+| Log in | Button | — |
+| Contact sales | Button | — |
+
+The two dropdowns are instances of a **Nav Dropdown** component with a text control — the label ("Products", "Resources") is set per instance, so both share one design.
+
+On phone, the nav collapses to a **Mobile Menu Button** that toggles between the Phone Closed and Phone Open variants.
+
+## The footer
+
+The footer lives in the layout template, not in a component. It has three link columns plus a legal row:
+
+| Column | Links |
+| --- | --- |
+| **Products** | Payments, Payables, Beyond Payments — all to `/products` |
+| **Resources** | Why JustiFi, Developer Docs (external), Partner Hub |
+| **Trust & Support** | Trust Center (external), Security, Sub-Account Onboarding, Merchant Support (external) |
+| **Legal** | Merchant Agreement, Terms of Service, Privacy Policy — all CMS-driven from the Legal collection |
+
+## How to add a page to the navigation
+
+1. Open the **Navigation Bar** component (Assets tab, or double-click any instance).
+2. Select the **Desktop** variant.
+3. To add a row to a dropdown, duplicate an existing row inside it and change the label and link.
+4. Repeat inside the **Phone Open** variant — the mobile menu is a separate set of items and does **not** inherit from Desktop.
+5. Preview at all three widths before publishing.
+
+For the footer, do the same inside the layout template. Editing it there updates every page at once.
+
+<Callout>
+  <p><strong>The mobile menu is built separately from the desktop nav.</strong> Any nav change has to be made twice — once in the Desktop variant, once in Phone Open. It is the most common thing to forget.</p>
+</Callout>
+
+## Known gaps worth a decision
+
+These are deliberate build-state notes, not bugs to panic about — but they should be resolved before or shortly after launch.
+
+- **The three `/solutions/*` pages, `/customers`, and `/updates` are not linked from the top nav or the footer.** They are fully built and live at their URLs, but nothing on the site points to them yet. They need either a nav entry, a footer entry, or both.
+- **The footer Products links point to bare `/products`** rather than the section anchors (`/products#payments`, `#payables`, `#beyond-payments`). The anchors exist on the page; the links just lost their fragments. Worth re-adding so the three links go to three different places.
+- **Log in and Contact sales in the nav have no destination set.**

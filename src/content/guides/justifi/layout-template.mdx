@@ -1,0 +1,59 @@
+---
+title: "The Layout Template"
+summary: "The single template behind all 16 pages, and the section recipe every page follows."
+section: "Design system"
+order: 6
+duration: "3 min read"
+updated: 2026-09-04
+---
+
+<Callout>
+  <p>All 16 pages use one layout template, called <strong>Template</strong>. It supplies the background, the navigation bar, and the footer, and leaves a slot in the middle for the page's own content. Edit it once, every page changes.</p>
+</Callout>
+
+<Callout>
+  <p><strong>Framer Academy — free video lessons</strong></p>
+  <p><a href="https://www.framer.com/academy/lessons/framer-fundamentals-stacks-and-relative-positioning">Stacks and relative positioning</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/framer-fundamentals-sizing-to-fill-and-fit-content">Sizing to fill and fit content</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/framer-fundamentals-absolute-positioning">Absolute positioning</a> — how the decorative background layers work</p>
+</Callout>
+
+## What's in the template
+
+The template is a vertical stack with a Navy background and three children, in order:
+
+- **Navigation Bar** — an instance of the nav component, pinned to the top of the viewport so it stays put as you scroll.
+- **The content slot** — an empty placeholder. Whatever a page contains gets dropped in here.
+- **The footer** — a Dark Navy panel, `24px` corner radius, capped at `1200px` wide, holding the three link columns and the legal row.
+
+### Spacing
+
+|  | Desktop | Tablet | Phone |
+| --- | --- | --- | --- |
+| Page padding | `120px` top, `40px` sides and bottom | Same | `120px` top, `16px` sides and bottom |
+| Gap between nav, content, and footer | `80px` | `80px` | `80px` |
+
+The `120px` top padding is there to clear the fixed navigation bar. The footer switches from a horizontal row of columns on desktop to a vertical stack on phone.
+
+## The page recipe
+
+Every page follows the same shape inside the content slot:
+
+- A single frame named **Content** — a vertical stack, `maxWidth: 1200px`, `width: 1fr`
+- A `100px` gap between sections (the home page uses `60px`, because its sections carry more of their own internal padding)
+- Each major section as a direct child of Content
+- Sections separated by a `1px` divider with a gradient that fades out at both ends
+
+That is the whole system. To add a section to a page, build a frame and drop it into Content at the right position — the spacing takes care of itself.
+
+The home page additionally has two decorative layers sitting behind Content: a **Hero Gradient** and a **Dotted Pattern**. Both are positioned absolutely so they do not affect the stack.
+
+## Editing the template
+
+Open it from the **Assets** tab, or select any page and click through to the template from the right panel.
+
+<Callout>
+  <p><strong>Every change here lands on all 16 pages at once.</strong> Changing the footer, the top padding, or the background is a site-wide edit. Preview at all three breakpoints before publishing — template changes are the easiest way to break a page you were not looking at.</p>
+</Callout>
+
+The template has its own three breakpoints, independent of any page's. As with pages, edit Desktop first and let Tablet and Phone inherit.

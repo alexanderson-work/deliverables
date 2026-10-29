@@ -1,0 +1,13 @@
+---
+import { studio } from "../site.config";
+---
+
+<section class="contact" aria-labelledby="questions">
+  <h2 id="questions">Questions?</h2>
+  <p>
+    If anything comes up as you put this work to use, email{" "}
+    <a class="rs-link" href={`mailto:${studio.email}`}>{studio.email}</a>{" "}
+    or <a class="rs-link" href={studio.calendar}>grab a time on the calendar</a>.
+  </p>
+  <p class="contact-sign">{studio.name}</p>
+</section>

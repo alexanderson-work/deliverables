@@ -1,0 +1,49 @@
+---
+import { getCollection } from "astro:content";
+import { Icon } from "@noorddev/vlak-react";
+import ClientShell from "../../layouts/ClientShell.astro";
+import type { Client } from "../../lib/content";
+
+export async function getStaticPaths() {
+  const clients = await getCollection("clients");
+  return clients
+    .filter((client) => client.data.resources.length)
+    .map((client) => ({ params: { client: client.id }, props: { client } }));
+}
+
+const { client } = Astro.props as { client: Client };
+const isExternal = (href: string) => /^https?:\/\//.test(href);
+---
+
+<ClientShell client={client} title="Resources" trail={[{ label: "Resources" }]}>
+  <header class="page-head">
+    <h1 class="rs-t-display">Resources</h1>
+    <p class="rs-t-sub">Links and files for running {client.data.name} day to day.</p>
+  </header>
+
+  {
+    client.data.resources.map((group, i) => (
+      <section class="section" aria-labelledby={`group-${i}`}>
+        <div class="section-head">
+          <h2 id={`group-${i}`}>{group.group}</h2>
+        </div>
+        <ul class="rows">
+          {group.items.map((item) => (
+            <li>
+              <a class="row row--plain" href={item.href}>
+                <span>
+                  <span class="row-title">{item.title}</span>
+                  {item.description && <span class="row-desc">{item.description}</span>}
+                </span>
+                <span class="row-meta">
+                  {item.meta}
+                  {isExternal(item.href) && <Icon name="external" size={12} aria-label="Opens another site" />}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</ClientShell>

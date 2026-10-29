@@ -1,0 +1,7 @@
+---
+// Inline code in guide bodies. A lone #RRGGBB value gets a color chip.
+const html = await Astro.slots.render("default");
+const hex = /^#[0-9a-f]{6}$/i.test(html.trim()) ? html.trim() : undefined;
+---
+
+<code class={hex ? "hex" : undefined} style={hex ? `--swatch: ${hex}` : undefined} set:html={html} />

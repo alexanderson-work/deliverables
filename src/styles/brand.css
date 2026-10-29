@@ -1,0 +1,12 @@
+/* Brand layer.
+   Vlak's tokens are custom properties on :root (see https://vlak.dev/docs/tokens.md).
+   Override them here to move the site toward the Alex Anderson design system;
+   this file loads after Vlak and is unlayered, so it always wins.
+
+   Examples:
+
+   :root {
+     --radius-sm: 6px;
+   }
+   :root[data-theme="dark"] { … }
+*/

@@ -1,0 +1,25 @@
+---
+import Base from "../layouts/Base.astro";
+import { siteTitle, studio } from "../site.config";
+---
+
+<Base title={`Page not found · ${siteTitle}`}>
+  <main class="home">
+    <div class="home-top">
+      <a href="/" style="color: inherit; text-decoration: none">{siteTitle}</a>
+    </div>
+    <div class="home-body">
+      <h1 class="rs-t-display">This page isn’t here.</h1>
+      <p class="rs-t-sub">
+        Check the link from your project email. If it still doesn’t work, contact {studio.name} and you’ll get a fresh
+        one.
+      </p>
+      <div class="page-actions">
+        <a class="rs-btn-ghost" href={`mailto:${studio.email}`}>Contact {studio.name}</a>
+      </div>
+    </div>
+    <div class="home-foot">
+      <span>{studio.name}</span>
+    </div>
+  </main>
+</Base>

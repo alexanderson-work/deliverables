@@ -1,0 +1,176 @@
+---
+import { getCollection } from "astro:content";
+import { Icon } from "@noorddev/vlak-react";
+import ClientShell from "../../layouts/ClientShell.astro";
+import type { Client } from "../../lib/content";
+
+export async function getStaticPaths() {
+  const clients = await getCollection("clients");
+  return clients
+    .filter((client) => client.data.brand)
+    .map((client) => ({ params: { client: client.id }, props: { client } }));
+}
+
+const { client } = Astro.props as { client: Client };
+const brand = client.data.brand!;
+
+const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
+const isExternal = (href: string) => /^https?:\/\//.test(href);
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(" ");
+const groundStyle = `--ground-light: ${brand.grounds.light}; --ground-dark: ${brand.grounds.dark}`;
+---
+
+<ClientShell client={client} title="Brand assets" trail={[{ label: "Brand assets" }]}>
+  <header class="page-head">
+    <h1 class="rs-t-display">Brand assets</h1>
+    <p class="rs-t-sub">{brand.intro ?? `The official logo files, colors, and typefaces for ${client.data.name}.`}</p>
+    {
+      brand.downloads.length > 0 && (
+        <div class="page-actions">
+          {brand.downloads.map((file, i) => (
+            <a class={i === 0 ? "rs-btn-primary" : "rs-btn-ghost"} href={file.href} download>
+              <Icon name="download" size={16} aria-hidden="true" />
+              {file.label}
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </header>
+
+  {
+    brand.assets.map((group) => (
+      <section class="section" aria-labelledby={slug(group.group)} style={groundStyle}>
+        <div class="section-head">
+          <h2 id={slug(group.group)}>{group.group}</h2>
+          <span class="row-meta">{group.items.length} {group.items.length === 1 ? "file set" : "file sets"}</span>
+        </div>
+        {group.description && <p class="section-note">{group.description}</p>}
+        <div class={`assets assets--${group.columns}`}>
+          {group.items.map((item) => (
+            <div class="asset">
+              <div class={`asset-preview asset-preview--${item.ground}`}>
+                {isVideo(item.preview) ? (
+                  <video
+                    src={item.preview}
+                    poster={item.poster}
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    preload="metadata"
+                    aria-label={`${group.group}, ${item.name}`}
+                  />
+                ) : (
+                  <img src={item.preview} alt={`${group.group}, ${item.name}`} loading="lazy" decoding="async" />
+                )}
+              </div>
+              <p class="asset-name">{item.name}</p>
+              <div class="asset-files">
+                {item.files.map((file) => (
+                  <a
+                    class="rs-btn-ghost"
+                    href={file.href}
+                    download={isExternal(file.href) ? undefined : ""}
+                    aria-label={`${isExternal(file.href) ? "Open" : "Download"} ${group.group}, ${item.name}, ${file.label}`}
+                  >
+                    <Icon name={isExternal(file.href) ? "external" : "download"} size={12} aria-hidden="true" />
+                    {file.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+
+  {
+    brand.colors.length > 0 && (
+      <section class="section" aria-labelledby="colors">
+        <div class="section-head">
+          <h2 id="colors">Colors</h2>
+          <span class="row-meta">Select a value to copy it</span>
+        </div>
+        {brand.colorNote && <p class="section-note">{brand.colorNote}</p>}
+        <div class="swatches">
+          {brand.colors.map((color) => (
+            <div>
+              <div class="swatch-chip" style={`background-color: ${color.hex}`} />
+              <p class="swatch-name">{color.name}</p>
+              <p class="swatch-values">
+                <button class="copy" type="button" data-copy={color.hex.toUpperCase()}>
+                  <span>{color.hex.toUpperCase()}</span>
+                  <Icon name="copy" size={12} aria-hidden="true" />
+                </button>
+                <br />
+                <button class="copy" type="button" data-copy={`rgb(${rgb(color.hex).replaceAll(" ", ", ")})`}>
+                  <span>RGB {rgb(color.hex)}</span>
+                  <Icon name="copy" size={12} aria-hidden="true" />
+                </button>
+                {color.cmyk && (
+                  <>
+                    <br />
+                    <button class="copy" type="button" data-copy={color.cmyk}>
+                      <span>CMYK {color.cmyk}</span>
+                      <Icon name="copy" size={12} aria-hidden="true" />
+                    </button>
+                  </>
+                )}
+              </p>
+              {color.usage && <p class="swatch-usage">{color.usage}</p>}
+            </div>
+          ))}
+        </div>
+        <p class="sr-live" aria-live="polite" id="copy-status" />
+      </section>
+    )
+  }
+
+  {
+    brand.type.length > 0 && (
+      <section class="section" aria-labelledby="type">
+        <div class="section-head">
+          <h2 id="type">Typography</h2>
+        </div>
+        <ul class="rows">
+          {brand.type.map((face) => (
+            <li>
+              <a class="row row--plain" href={face.href ?? "#type"}>
+                <span>
+                  <span class="row-title">{face.name}</span>
+                  {face.description && <span class="row-desc">{face.description}</span>}
+                </span>
+                <span class="row-meta">
+                  {face.role}
+                  {face.href && <Icon name="external" size={12} aria-label="Opens Google Fonts" />}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</ClientShell>
+
+<script>
+  const status = document.getElementById("copy-status");
+  for (const button of document.querySelectorAll<HTMLButtonElement>("button[data-copy]")) {
+    button.addEventListener("click", async () => {
+      const value = button.dataset.copy!;
+      try {
+        await navigator.clipboard.writeText(value);
+        if (status) status.textContent = `Copied ${value}`;
+        const label = button.querySelector("span")!;
+        const text = label.textContent;
+        label.textContent = "Copied";
+        setTimeout(() => (label.textContent = text), 1200);
+      } catch {
+        if (status) status.textContent = "Copy failed. Select the value and copy it manually.";
+      }
+    });
+  }
+</script>

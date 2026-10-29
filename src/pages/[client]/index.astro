@@ -1,0 +1,172 @@
+---
+import { getCollection } from "astro:content";
+import { Icon } from "@noorddev/vlak-react";
+import ClientShell from "../../layouts/ClientShell.astro";
+import GuideRows from "../../components/GuideRows.astro";
+import Contact from "../../components/Contact.astro";
+import { bySection, clientUrl, getClientGuides, guideUrl, type Client } from "../../lib/content";
+
+export async function getStaticPaths() {
+  const clients = await getCollection("clients");
+  return clients.map((client) => ({ params: { client: client.id }, props: { client } }));
+}
+
+const { client } = Astro.props as { client: Client };
+const { name, summary, project, brand, resources } = client.data;
+const base = clientUrl(client);
+const guides = await getClientGuides(client);
+const sections = bySection(guides);
+const featured = guides.find((g) => g.data.video);
+const lead = brand?.assets[0]?.items[0];
+const downloads = brand?.downloads ?? [];
+const links = resources.flatMap((g) => g.items);
+const brandNote = brand
+  ? [
+      ...brand.assets.map((g, i) => (i === 0 ? g.group : g.group.toLowerCase())),
+      brand.colors.length && `${brand.colors.length} colors`,
+      brand.type.length && `${brand.type.length} typefaces`,
+    ]
+      .filter(Boolean)
+      .join(", ") + "."
+  : "";
+---
+
+<ClientShell client={client} description={summary}>
+  <header class="page-head">
+    <h1 class="rs-t-display">{name}</h1>
+    <p class="rs-t-sub">{summary}</p>
+  </header>
+
+  {
+    brand && lead && (
+      <section class="section" aria-labelledby="brand">
+        <div class="section-head">
+          <h2 id="brand">Brand assets</h2>
+          <a class="rs-link" href={`${base}brand/`}>
+            All brand assets
+          </a>
+        </div>
+        <a class="showcase" href={`${base}brand/`} style={`--ground-light: ${brand.grounds.light}`}>
+          <span class="showcase-logo">
+            <img src={lead.preview} alt={`${name} ${brand.assets[0].group.toLowerCase()}`} />
+          </span>
+          {brand.colors.length > 0 && (
+            <span class="strip" aria-hidden="true">
+              {brand.colors.map((c) => (
+                <span style={`background-color: ${c.hex}`} />
+              ))}
+            </span>
+          )}
+        </a>
+        <p class="section-note">{brandNote}</p>
+        {downloads.length > 0 && (
+          <div class="page-actions">
+            {downloads.map((file, i) => (
+              <a class={i === 0 ? "rs-btn-primary" : "rs-btn-ghost"} href={file.href} download>
+                <Icon name="download" size={16} aria-hidden="true" />
+                {file.label}
+              </a>
+            ))}
+          </div>
+        )}
+      </section>
+    )
+  }
+
+  {
+    featured && (
+      <section class="section" aria-labelledby="start">
+        <div class="section-head">
+          <h2 id="start">Start here</h2>
+        </div>
+        <a class="feature" href={guideUrl(client, featured)}>
+          <div class="feature-media">
+            {featured.data.video?.poster && <img src={featured.data.video.poster} alt="" />}
+            <span class="feature-play">
+              <Icon name="play" variant="filled" size={16} aria-hidden="true" />
+              Watch the guide
+            </span>
+          </div>
+          <div class="feature-body">
+            <span>
+              <span class="row-title">{featured.data.title}</span>
+              <span class="row-desc">{featured.data.summary}</span>
+            </span>
+            {featured.data.duration && <span class="row-meta">{featured.data.duration}</span>}
+          </div>
+        </a>
+      </section>
+    )
+  }
+
+  {
+    guides.length > 0 && (
+      <section class="section" aria-labelledby="guides">
+        <div class="section-head">
+          <h2 id="guides">Website guidebook</h2>
+          <span class="row-meta">{guides.length} guides</span>
+        </div>
+        {sections.map(({ section, guides: list }) => (
+          <div class="guide-group">
+            {sections.length > 1 && <h3 class="group-label">{section}</h3>}
+            <GuideRows client={client} guides={list} start={guides.indexOf(list[0]) + 1} />
+          </div>
+        ))}
+      </section>
+    )
+  }
+
+  {
+    links.length > 0 && (
+      <section class="section" aria-labelledby="resources">
+        <div class="section-head">
+          <h2 id="resources">Resources</h2>
+          <a class="rs-link" href={`${base}resources/`}>
+            All resources
+          </a>
+        </div>
+        <ul class="rows">
+          {links.slice(0, 4).map((item) => (
+            <li>
+              <a class="row row--plain" href={item.href}>
+                <span>
+                  <span class="row-title">{item.title}</span>
+                  {item.description && <span class="row-desc">{item.description}</span>}
+                </span>
+                {item.meta && <span class="row-meta">{item.meta}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    project.length > 0 && (
+      <section class="section" aria-labelledby="project">
+        <div class="section-head">
+          <h2 id="project">Project</h2>
+        </div>
+        <dl class="facts">
+          {project.map((fact) => (
+            <div>
+              <dt>{fact.label}</dt>
+              <dd>
+                {fact.href ? (
+                  <a class="rs-link" href={fact.href}>
+                    {fact.value}
+                  </a>
+                ) : (
+                  fact.value
+                )}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    )
+  }
+
+  <Contact />
+</ClientShell>

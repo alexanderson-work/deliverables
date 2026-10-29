@@ -1,0 +1,86 @@
+---
+import { getCollection, render } from "astro:content";
+import { Callout, Kbd } from "@noorddev/vlak-react";
+import ClientShell from "../../../layouts/ClientShell.astro";
+import Contact from "../../../components/Contact.astro";
+import Figure from "../../../components/Figure.astro";
+import GuideVideo from "../../../components/GuideVideo.astro";
+import InlineCode from "../../../components/InlineCode.astro";
+import Toc from "../../../components/Toc.astro";
+import { formatDate, getClientGuides, guideSlug, guideUrl, pad, type Client, type Guide } from "../../../lib/content";
+
+export async function getStaticPaths() {
+  const clients = await getCollection("clients");
+  const paths = await Promise.all(
+    clients.map(async (client) => {
+      const guides = await getClientGuides(client);
+      return guides.map((guide, i) => ({
+        params: { client: client.id, guide: guideSlug(guide) },
+        props: { client, guide, index: i, prev: guides[i - 1], next: guides[i + 1] },
+      }));
+    }),
+  );
+  return paths.flat();
+}
+
+interface Props {
+  client: Client;
+  guide: Guide;
+  index: number;
+  prev?: Guide;
+  next?: Guide;
+}
+
+const { client, guide, index, prev, next } = Astro.props;
+const { title, summary, duration, updated, video } = guide.data;
+const { Content, headings } = await render(guide);
+---
+
+<ClientShell
+  client={client}
+  title={title}
+  description={summary}
+  trail={[{ label: guide.data.section }, { label: title }]}
+>
+  <div class="doc">
+    <article class="doc-main">
+      <header class="page-head">
+        <p class="eyebrow">
+          <span>{guide.data.section}</span>
+          <span>Guide {pad(index + 1)}</span>
+          {duration && <span>{duration}</span>}
+          {updated && <span>Updated {formatDate(updated)}</span>}
+        </p>
+        <h1 class="rs-t-display">{title}</h1>
+        <p class="rs-t-sub">{summary}</p>
+      </header>
+
+      {video && <GuideVideo title={title} src={video.src} poster={video.poster} captions={video.captions} />}
+
+      <div class="prose">
+        <Content components={{ Callout, Kbd, Figure, code: InlineCode }} />
+      </div>
+
+      {
+        (prev || next) && (
+          <nav class="pager" aria-label="More guides">
+            {prev && (
+              <a href={guideUrl(client, prev)} rel="prev">
+                <span>Previous</span>
+                <strong>{prev.data.title}</strong>
+              </a>
+            )}
+            {next && (
+              <a href={guideUrl(client, next)} rel="next">
+                <span>Next</span>
+                <strong>{next.data.title}</strong>
+              </a>
+            )}
+          </nav>
+        )
+      }
+      <Contact />
+    </article>
+    <Toc headings={headings} />
+  </div>
+</ClientShell>

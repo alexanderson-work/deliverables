@@ -1,0 +1,30 @@
+---
+import { ThemeToggle } from "@noorddev/vlak-react/components/theme-toggle";
+import Base from "../layouts/Base.astro";
+import { siteTitle, studio } from "../site.config";
+
+const year = new Date().getFullYear();
+---
+
+<Base title={`${siteTitle} · ${studio.name}`} description="Guides, brand files, and resources for clients of Alex Anderson.">
+  <main class="home">
+    <div class="home-top">
+      <span>{siteTitle}</span>
+      <ThemeToggle className="rs-theme-toggle-inline" client:idle />
+    </div>
+    <div class="home-body">
+      <h1 class="rs-t-xl">Everything from your project, in one place.</h1>
+      <p class="rs-t-sub">
+        Each client of {studio.name} gets a private space here with guides for their website, brand files, and the
+        links they need. Open the link from your project email to find yours.
+      </p>
+      <div class="page-actions">
+        <a class="rs-btn-ghost" href={studio.url}>Visit alexanderson.work</a>
+      </div>
+    </div>
+    <div class="home-foot">
+      <span>© {year} {studio.name}</span>
+      <a href={studio.url}>alexanderson.work</a>
+    </div>
+  </main>
+</Base>

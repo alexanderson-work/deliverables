@@ -1,0 +1,101 @@
+---
+title: "Framer Basics: Getting Around the Editor"
+summary: "The editor layout, the five concepts the site is built on, and how an edit goes live."
+section: "Getting started"
+order: 1
+duration: "4 min read"
+updated: 2026-09-04
+---
+
+<Callout>
+  <p><strong>New to Framer? Start here.</strong> This covers the editor layout, the handful of concepts that explain how the whole site is built, and how an edit becomes a live change.</p>
+</Callout>
+
+<Callout>
+  <p><strong>Framer Academy — free video lessons</strong></p>
+  <p><a href="https://www.framer.com/academy/courses/fundamentals">Framer Fundamentals (full course)</a> — the best 30 minutes you can spend before touching the site</p>
+  <p><a href="https://www.framer.com/academy/lessons/framer-fundamentals-framer-interface">Getting familiar with the Framer interface</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/framer-fundamentals-thinking-in-frames">Thinking in frames</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/framer-fundamentals-stacks-and-relative-positioning">Stacks and relative positioning</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/framer-fundamentals-sizing-to-fill-and-fit-content">Sizing to fill and fit content</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/framer-fundamentals-stacks-vs-grids">Stacks vs grids</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/framer-fundamentals-absolute-positioning">Absolute positioning</a></p>
+</Callout>
+
+## The editor at a glance
+
+| Area | What it does |
+| --- | --- |
+| **Canvas** (center) | The infinite workspace. Every page, component, and breakpoint sits here as a frame you can zoom around. |
+| **Left panel** | Tabs for Pages, Layers, Assets, and CMS. The Layers tree is the reliable way to select something — clicking on the canvas often grabs a child instead of the container you meant. |
+| **Properties** (right) | Everything about the current selection: size, layout, fill, typography, links, effects, animation. |
+| **Toolbar** (top) | Insert, the breakpoint switcher, Preview, and Publish. |
+
+<Callout>
+  <p>The single most useful habit: <strong>select in the Layers panel, not on the canvas.</strong> Almost every accidental edit comes from having the wrong thing selected.</p>
+</Callout>
+
+## Five concepts that explain everything else
+
+### 1. Everything is a Frame
+
+A frame is a box. Pages are frames, sections are frames, cards are frames, and buttons are frames. Text and images live inside frames. When you understand frames, the Layers tree stops looking arbitrary.
+
+### 2. Stacks do the layout
+
+Almost nothing on this site is positioned by dragging it to a spot. Instead, a frame is set to **Stack** — vertical or horizontal — and its children line up automatically with a **gap** between them. Delete an item and everything below closes the space on its own.
+
+This is why you can add a new card to a grid and it just fits. It is also why dragging something around on the canvas usually does nothing useful: the stack decides where it goes.
+
+### 3. Fill and Fit do the sizing
+
+Instead of fixed pixel widths, elements are usually set to:
+
+- **Fill** — take up all the remaining space in the parent
+- **Fit** — shrink to exactly the size of the content inside
+
+That combination is what makes the site respond to different screen widths without a separate design for each one.
+
+### 4. Breakpoints are three versions of one page
+
+Every page on this site exists at three widths:
+
+| Breakpoint | Applies at |
+| --- | --- |
+| Desktop | 1200px and wider |
+| Tablet | 810px – 1199px |
+| Phone | 809px and narrower |
+
+Desktop is the **primary**. Tablet and Phone are copies of it. Editing content on Desktop flows down to the other two automatically. Editing on Tablet or Phone creates an **override** that only applies there and stops inheriting that particular property.
+
+<Callout>
+  <p><strong>Always make content edits on Desktop.</strong> If you fix a typo on the Phone breakpoint, the Desktop and Tablet versions keep the typo, and the two will never sync again. Use Tablet and Phone only for deliberate layout adjustments.</p>
+</Callout>
+
+### 5. Components are reusable pieces
+
+Buttons, the navigation bar, the FAQ accordion, and about twenty other pieces are **components** — built once and reused everywhere. Editing the component updates every instance across the site. See the [Design Components](../design-components/) doc for the full list.
+
+## Making a simple edit
+
+1. Open the page from the **Pages** tab in the left panel.
+2. Make sure the breakpoint switcher in the toolbar says **Desktop**.
+3. Find the element in the **Layers** panel and select it.
+4. Double-click the text on canvas to edit it, or change a property on the right.
+5. Hit **Preview** (top right) to check it in a real browser window.
+
+## Preview, then publish
+
+**Preview** opens the site in a live browser view with all animations and interactions running. Always preview before publishing — the canvas is a static approximation and does not show hover states, scroll animations, or the mobile menu behaving correctly.
+
+**Publish** pushes the site to its live URL. Everything you have changed since the last publish goes at once; there is no way to publish a single page.
+
+<Callout>
+  <p><strong>Check whether staging is enabled before your first publish.</strong> This project has historically published straight to production, meaning Publish makes changes live immediately with no intermediate review step. Confirm the current setting under Site Settings before you rely on a staging environment existing.</p>
+</Callout>
+
+## If something goes wrong
+
+- **Undo** — <Kbd>Cmd</Kbd> <Kbd>Z</Kbd> works across almost everything, including CMS edits.
+- **Version history** — Framer keeps a running history of the project. You can open an earlier version and restore it. This is your safety net for anything undo cannot reach.
+- **Branches** — for anything larger than a text change, work on a branch instead of the main project. See the [Using AI in Framer](../using-ai-in-framer/) doc; the same advice applies to manual editing.

@@ -1,0 +1,33 @@
+---
+import { guideUrl, pad, type Client, type Guide } from "../lib/content";
+
+interface Props {
+  client: Client;
+  guides: Guide[];
+  /** Number offset when the list continues from a featured guide. */
+  start?: number;
+}
+
+const { client, guides, start = 1 } = Astro.props;
+---
+
+<ol class="rows">
+  {
+    guides.map((guide, i) => (
+      <li>
+        <a class="row" href={guideUrl(client, guide)}>
+          <span class="row-num">{pad(start + i)}</span>
+          <span>
+            <span class="row-title">{guide.data.title}</span>
+            <span class="row-desc">{guide.data.summary}</span>
+          </span>
+          <span class="row-meta">
+            {guide.data.video && <span>Video</span>}
+            {guide.data.video && guide.data.duration && <span aria-hidden="true">·</span>}
+            {guide.data.duration && <span>{guide.data.duration}</span>}
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ol>

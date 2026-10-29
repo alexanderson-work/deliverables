@@ -1,0 +1,113 @@
+---
+title: "Design Components"
+summary: "All 24 reusable components, what each one does, and how to edit them safely."
+section: "Design system"
+order: 7
+duration: "4 min read"
+updated: 2026-09-04
+---
+
+<Callout>
+  <p>The site is built from <strong>24 components</strong> — pieces designed once and reused everywhere. Editing a component changes every instance of it across all 16 pages. That is the point, and it is also the risk.</p>
+</Callout>
+
+## How components work here
+
+A component has **variants** — alternate states of the same thing. The Button has CTA, Secondary, and Tertiary. The FAQ Item has Closed and Open. Placing a component gives you an **instance**, and each instance picks its variant and fills in its own text or link through **controls** in the right panel.
+
+This means the same accordion design drives 22 FAQs across five pages, and one Button design covers every call to action on the site.
+
+<Callout>
+  <p><strong>Editing an instance vs editing the component.</strong> Changing text or a link on an instance is safe and local. Double-clicking through into the component itself edits the master — every instance everywhere changes. If you only meant to fix one, you probably wanted a control, not the component.</p>
+</Callout>
+
+## Navigation
+
+| Component | Variants | What it does |
+| --- | --- | --- |
+| **Navigation Bar** | Desktop, Phone Open, Phone Closed | The site header. Placed once in the layout template, so it appears on every page. |
+| **Mobile Menu Button** | Closed, Open | The hamburger. Toggles the nav between its two phone variants. |
+| **Nav Dropdown** | Closed, Open | A hover dropdown with a text control. Used twice — as "Products" and as "Resources". |
+
+## Buttons and links
+
+| Component | Variants | What it does |
+| --- | --- | --- |
+| **Button** | CTA, Secondary, Tertiary | The main button. CTA is the amber fill, Secondary is outlined, Tertiary is a plain text link. |
+| **Icon Button** | Navy | A row with a dotted icon and a label. Used inside the nav dropdowns. |
+| **Submit Button** | Default, Pending, Success | The form button on `/get-started`. Framer swaps the variant automatically as the form submits. |
+| **Update Callout** | — | A small linked callout with a new-tab toggle. |
+| **Link Bubble** | — | A pill-shaped inline link. |
+
+## Product storytelling
+
+These are the large interactive pieces that carry the product narrative. Several exist as a desktop and a mobile pair, because the desktop version is too wide to reflow.
+
+| Component | Variants | What it does |
+| --- | --- | --- |
+| **Solutions Showcase** / **Solutions Showcase Mobile** | 1, 2, 3 | The tabbed product section on the home page. |
+| **Product Demo** / **Product Demo Mobile** | Payments, Payables, Beyond Payments | The dashboard mockup inside the showcase. Built natively rather than as video, so the small UI text stays crisp. |
+| **Products Slider** / **Products Slider Mobile** | Payments, Payables, Beyond Payments, Empty | The product carousel. |
+| **Sticky Highlight Set** | Initial, Control, Flexibility, Intelligence, Automation (plus a mobile variant of each) | The "Built for control" scroll sequence on the home page. |
+| **Sticky Callout** | Highlighted, Closed | A pinned callout used alongside the highlight set. |
+| **Scrolling Accordion** | 1, 2, 3 | A scroll-driven expanding section. |
+| **Onboarding Matrix** | Sole Prop / Single-Member LLC, Multi-Member LLC / Corp, Non-Profits, Government Entities, Individuals | The requirements table on `/sub-account-onboarding`. One variant per business type. |
+
+## CMS-connected components
+
+These pull their content from the CMS. Editing the copy means editing the collection item, not the component. See the [Using the Framer CMS](../using-the-framer-cms/) doc.
+
+| Component | Variants | Reads from |
+| --- | --- | --- |
+| **Updates Feed** | All, Product, Company, Insights | Updates. Each variant filters the list to one category — that is how the chips on `/updates` work, with no code. |
+| **Update Row** | Row | Updates. One row of the feed. Holds the hover state for the whole row in one place. |
+| **FAQ Block** | Products, Why JustiFi, Vertical Software, Insurtech & MGA's, Franchise Networks | FAQs. One variant per page, each filtered to its category. |
+| **FAQ Item** | Closed, Open | FAQs. A single question row inside the block. |
+| **Customer Story** | Expanded, Collapsed | Customers. The case study card used on `/customers` and on all three solutions pages. |
+| **Customer Stories** | First / Second / Third / Fourth Open | Customers. The multi-story accordion. |
+
+## Where the FAQ Block sits
+
+One instance per page, each on its matching variant:
+
+- `/products` → Products
+- `/why-justifi` → Why JustiFi
+- `/solutions/vertical-software` → Vertical Software
+- `/solutions/insurtech-mga` → Insurtech & MGA's
+- `/solutions/franchise` → Franchise Networks
+
+To put FAQs on a new page: add a category to the FAQs collection, add a matching variant to FAQ Block, filter its list to that category, and place an instance.
+
+<details>
+<summary>Component IDs (for developers and AI agents)</summary>
+
+Useful when driving the project through the Framer Agent CLI — see the [Using AI in Framer](../using-ai-in-framer/) doc.
+
+| Component | ID |
+| --- | --- |
+| Navigation Bar | `jjWqzJeuC` |
+| Mobile Menu Button | `jxosQBGsN` |
+| Nav Dropdown | `wAoN1Iacu` |
+| Button | `q8q7CyC5y` |
+| Icon Button | `yR49dYNjM` |
+| Submit Button | `J9n54mp3O` |
+| Update Callout | `vyYITQKMa` |
+| Link Bubble | `QT7u1crdv` |
+| Solutions Showcase | `xvIX05nFC` |
+| Solutions Showcase Mobile | `sM39kZQs7` |
+| Product Demo | `xR1Lhhfep` |
+| Product Demo Mobile | `xjqM6eJJR` |
+| Products Slider | `eoh92YX_z` |
+| Products Slider Mobile | `jxOO8ahTp` |
+| Sticky Highlight Set | `afG3mZbcW` |
+| Sticky Callout | `LOYx6m3Ca` |
+| Scrolling Accordion | `OZyJNWLpy` |
+| Onboarding Matrix | `ak3mT5qHm` |
+| Updates Feed | `P69iFKNds` |
+| Update Row | `yAAyVZShz` |
+| FAQ Block | `OEFFrpSfq` |
+| FAQ Item | `F0YFQRBdl` |
+| Customer Story | `kUp7edyiz` |
+| Customer Stories | `mIXqwbain` |
+
+</details>

@@ -1,0 +1,96 @@
+---
+title: "Using AI in Framer"
+summary: "Framer's built-in agent, and driving the project from Claude Code, Cursor, or Codex."
+section: "Technical reference"
+order: 11
+duration: "4 min read"
+updated: 2026-09-04
+---
+
+<Callout>
+  <p>There are two ways to point AI at this project: <strong>Framer's own agent</strong>, built into the editor, and <strong>external coding agents</strong> like Claude Code, Cursor, or Codex, which connect through Framer's command-line tool. They do different jobs well.</p>
+</Callout>
+
+<Callout>
+  <p><strong>Framer Academy — free video lessons</strong></p>
+  <p><a href="https://www.framer.com/academy/courses/get-started-with-framer-agents">Get Started with Framer Agents (full course)</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/framer-agents-generation-layout-style">Generation, layout, and styling with Framer Agents</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/framer-agents-content-scale">Content, Components, and CMS with Framer Agents</a></p>
+  <p><a href="https://www.framer.com/academy/lessons/polish-your-page-with-agents">Polish your pages with Agents</a></p>
+</Callout>
+
+## Framer's built-in agent
+
+Framer ships an AI agent inside the editor. You describe what you want in plain language and it makes the change on the canvas.
+
+**What it is genuinely good at:**
+
+- Generating a first draft of a new section or page
+- Bulk content work — populating a CMS collection, filling repeated cards
+- Styling and layout adjustments described in words ("make this section tighter on mobile")
+- Polishing an existing page rather than starting from scratch
+
+**Where to be careful:**
+
+- It works from what it can see. On a site this systematized, it can invent a new color or size instead of reaching for the existing style. Always check afterwards that new elements use the shared styles.
+- It has no knowledge of the conventions in these docs — the no-all-caps rule, the section spacing recipe, the desktop-first breakpoint discipline.
+
+## External agents (Claude Code, Cursor, Codex)
+
+Framer publishes a command-line agent that lets an external AI coding tool read and edit the project directly. This is how most of this site was built.
+
+It suits deeper, more systematic work: auditing every page for a problem, applying a change consistently across all sixteen pages, restructuring a CMS collection, or building a component with many variants. It is considerably more precise than describing the same task in prose, because the agent can read the actual project structure back and verify what it did.
+
+### Connecting
+
+Run the setup once on the machine that has Framer installed:
+
+```bash
+npx @framer/agent@latest setup
+```
+
+Then open a session against this project:
+
+```bash
+npx @framer/agent@latest session new "NqaY7a9b0aTkByiWU1qV"
+```
+
+That returns a session ID. From then on, the agent runs scripts against the live project:
+
+```bash
+npx @framer/agent@latest exec -s <session-id> -f script.js
+```
+
+The Framer desktop app needs to be open and on the right project for any of this to work.
+
+<Callout>
+  <p><strong>Project ID:</strong> <code>NqaY7a9b0aTkByiWU1qV</code></p>
+</Callout>
+
+## Rules worth keeping
+
+These come out of actually building this site with agents, and they save real time.
+
+### Work on a branch
+
+Framer supports branches like a code repository. Create one for any piece of work bigger than a text edit, do the work there, review it, then merge into main. A branch that goes wrong can simply be abandoned.
+
+### Always verify, never trust the report
+
+An agent will happily tell you a change applied cleanly when nothing persisted. Some Framer properties silently accept a value and discard it. **Read the change back, or take a screenshot, before believing it happened.** This is the single most valuable habit when working this way.
+
+### Preview before publishing
+
+The canvas does not show hover states, scroll animations, or the mobile menu behaving properly. Preview at all three breakpoints.
+
+### Be specific about what not to touch
+
+Agents are literal. Telling one to "clean up the FAQ section" invites it to redesign things you were happy with. Name the change you want and the boundary around it.
+
+### Tell it about the design system
+
+Before starting a task, point the agent at the [Colors & Text Styles](../colors-and-text-styles/) and [The Layout Template](../layout-template/) docs. Without that it will produce something that looks approximately right and uses none of the shared styles — which is worse than useless, because it looks fine until someone changes a token.
+
+<Callout>
+  <p><strong>Never let an agent publish.</strong> Publishing is an outward-facing action and should always be a deliberate human decision, made after previewing. Ask agents to prepare changes and stop there.</p>
+</Callout>
