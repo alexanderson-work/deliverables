@@ -225,9 +225,52 @@ a.rs-btn-ghost {
   border-color: transparent;
 }
 
-.mobile-menu .rs-sidebar-label,
-.mobile-menu .rs-sidebar-item {
+.mobile-menu .rs-sidebar-label {
   padding-inline: 0;
+}
+
+.mobile-menu .rs-sidebar-item {
+  margin-inline: -12px;
+  padding-inline: 12px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Current page in the nav ──
+   Fill plus a firm edge, per Vlak's rule for selected states: a soft ink tint
+   across the row and a 2px ink bar on its leading edge. The tint is translucent
+   so the label stays legible while the marker glides between pages (motion.css).
+   No weight change: a wider label could re-wrap and shift the items below it. */
+
+.shell-rail .rs-sidebar-item,
+.mobile-menu .rs-sidebar-item {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Vlak pads the last item for the rail's foot; the nav already has that room. */
+.shell-rail .rs-sidebar-item:last-child {
+  padding-bottom: 0.5rem;
+}
+
+.rs-sidebar-item[aria-current="page"] {
+  color: var(--text);
+}
+
+.nav-current {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: color-mix(in srgb, var(--text) 7%, transparent);
+  box-shadow: inset 2px 0 0 var(--text);
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .shell-rail .rs-sidebar-item:not([aria-current]):hover,
+  .mobile-menu .rs-sidebar-item:not([aria-current]):hover {
+    background-color: color-mix(in srgb, var(--text) 4%, transparent);
+  }
 }
 
 .mobile-menu nav {

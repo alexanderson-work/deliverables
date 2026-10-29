@@ -55,7 +55,10 @@ const fontOrigins =
     <link rel="stylesheet" href={fontStylesheet} />
     {themeCss && <style is:inline set:html={themeCss} />}
     <script is:inline>
-      // Apply the stored scheme before paint so there is no flash, and tint the browser chrome to match.
+      // Before first paint: a page opens with its title on screen, so the header's
+      // "here" crumb starts hidden (ClientShell reveals it once the title scrolls away).
+      document.documentElement.classList.add("title-in-view");
+      // Apply the stored scheme so there is no flash, and tint the browser chrome to match.
       try {
         const theme = localStorage.getItem("vlak-theme");
         if (theme === "dark" || theme === "light") {

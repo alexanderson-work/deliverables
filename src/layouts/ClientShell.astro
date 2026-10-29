@@ -78,6 +78,7 @@ const theme = client.data.theme;
                 {group.items.map((item) => (
                   <SidebarItem href={item.href} current={item.href === current}>
                     {item.label}
+                    {item.href === current && <span class="nav-current" aria-hidden="true" />}
                   </SidebarItem>
                 ))}
               </>
@@ -97,27 +98,8 @@ const theme = client.data.theme;
   </div>
 
   <script is:inline>
-    // Before first paint: hide the header's "here" crumb while the page title is on screen,
-    // mark what arrives in sequence, and keep the current sidebar item in view.
+    // Keep the current sidebar item in view after a page load.
     (() => {
-      const root = document.documentElement;
-      const title = document.querySelector("main h1");
-      const top = parseFloat(getComputedStyle(root).getPropertyValue("--top-h")) || 64;
-      if (title && title.getBoundingClientRect().bottom > top) root.classList.add("title-in-view");
-
-      // Stagger what's on screen into place (motion.css, .arrive). Below the fold stays put.
-      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        const pieces = document.querySelectorAll(
-          ".page-head > *, .page > .section, .page > .contact, .doc-main > .video, .doc-main > .prose > *, .doc-main > .pager, .doc-main > .contact, .toc",
-        );
-        let order = 0;
-        for (const piece of pieces) {
-          if (order > 10 || piece.getBoundingClientRect().top > window.innerHeight) continue;
-          piece.style.setProperty("--stagger", String(order++));
-          piece.classList.add("arrive");
-        }
-      }
-
       const rail = document.querySelector(".shell-rail .rs-sidebar");
       const item = rail && rail.querySelector('[aria-current="page"]');
       if (item) {
@@ -129,7 +111,7 @@ const theme = client.data.theme;
   </script>
   <script>
     // The "here" crumb fades in once the page title scrolls under the header,
-    // the way Vlak's crumb bar does.
+    // the way Vlak's crumb bar does. Base.astro starts it hidden before first paint.
     const root = document.documentElement;
     const title = document.querySelector("main h1");
     if (title) {

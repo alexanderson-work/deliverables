@@ -33,9 +33,11 @@
 }
 
 /* ── Page to page ──
-   The header and rail hold still. The old page clears first and the new page's
-   content arrives after it, never on top of it: overlapping two different pages
-   reads as a double exposure. */
+   One crossfade for everything, old out and new in on the same curve at the
+   same time. Their opacities always sum to one, so whatever is identical on
+   both pages (paper, header, rail) holds perfectly still, and only what changed
+   fades. The new page's content then arrives in sequence (Arrival below), and
+   the nav marker glides to its new item. */
 
 @view-transition {
   navigation: auto;
@@ -53,39 +55,96 @@
   view-transition-name: mobile-top;
 }
 
-::view-transition-old(root) {
-  animation: motion-fade-out calc(var(--duration) * 0.75) var(--ease) both;
+::view-transition-old(*) {
+  animation: motion-fade-out var(--duration) var(--ease) both;
 }
 
-/* The new page's paper fades up after the old one clears; its content then
-   arrives in sequence inside it (.arrive below), so nothing rises twice. */
-::view-transition-new(root) {
-  animation: motion-fade-in var(--duration) var(--ease) var(--duration-snap) both;
+::view-transition-new(*) {
+  animation: motion-fade-in var(--duration) var(--ease) both;
 }
 
-html:not(.theme-switching)::view-transition-group(app-top),
-html:not(.theme-switching)::view-transition-old(app-top),
-html:not(.theme-switching)::view-transition-new(app-top),
-html:not(.theme-switching)::view-transition-group(rail),
-html:not(.theme-switching)::view-transition-old(rail),
-html:not(.theme-switching)::view-transition-new(rail),
-html:not(.theme-switching)::view-transition-group(mobile-top),
-html:not(.theme-switching)::view-transition-old(mobile-top),
-html:not(.theme-switching)::view-transition-new(mobile-top) {
+/* The chrome doesn't move or resize between pages. */
+::view-transition-group(app-top),
+::view-transition-group(rail),
+::view-transition-group(mobile-top) {
   animation: none;
 }
 
 /* ── Arrival ──
-   When a page opens, what's on screen comes in one piece after another: the
-   title, its intro, then each block, about 55ms apart. Each fades on Vlak's
-   curve and rises on the glide. Content below the fold is simply there.
-   ClientShell marks the pieces and their order before the first paint. */
+   When a page opens, its content comes in one piece after another: the title,
+   its intro, then each block, 50ms apart. Each fades on Vlak's curve and rises
+   on the glide. Pure CSS, so it is in place from the first paint. */
 
-.arrive {
-  animation:
-    motion-fade-in var(--duration-deliberate) var(--ease) both,
-    motion-rise var(--duration-glide) var(--ease-glide) both;
-  animation-delay: calc(120ms + var(--stagger, 0) * 55ms);
+@media (prefers-reduced-motion: no-preference) {
+  .page-head > *,
+  .page > .section,
+  .page > .contact,
+  .doc-main > .video,
+  .doc-main > .prose > :nth-child(-n + 8),
+  .doc-main > .pager,
+  .doc-main > .contact,
+  .toc {
+    animation:
+      motion-fade-in 0.35s var(--ease) both,
+      motion-rise var(--duration-glide) var(--ease-glide) both;
+    animation-delay: calc(60ms + var(--stagger, 0) * 50ms);
+  }
+}
+
+.page-head > :nth-child(2) {
+  --stagger: 1;
+}
+
+.page-head > :nth-child(3) {
+  --stagger: 2;
+}
+
+.page-head > :nth-child(4) {
+  --stagger: 3;
+}
+
+.page > .section:nth-child(2),
+.doc-main > .video {
+  --stagger: 3;
+}
+
+.page > .section:nth-child(3),
+.prose > :nth-child(1) {
+  --stagger: 4;
+}
+
+.page > :nth-child(4),
+.prose > :nth-child(2),
+.toc {
+  --stagger: 5;
+}
+
+.page > :nth-child(n + 5),
+.prose > :nth-child(3) {
+  --stagger: 6;
+}
+
+.prose > :nth-child(4) {
+  --stagger: 7;
+}
+
+.prose > :nth-child(n + 5),
+.doc-main > .pager,
+.doc-main > .contact {
+  --stagger: 8;
+}
+
+/* ── Nav marker ──
+   The current-page marker glides from the old item to the new one while the
+   rest of the rail holds still. */
+
+.shell-rail .nav-current {
+  view-transition-name: nav-current;
+}
+
+::view-transition-group(nav-current) {
+  animation-duration: var(--duration-glide);
+  animation-timing-function: var(--ease-glide);
 }
 
 /* ── Light and dark ──
@@ -263,8 +322,7 @@ img.is-loading {
 
   ::view-transition-group(*),
   ::view-transition-old(*),
-  ::view-transition-new(*),
-  .arrive {
+  ::view-transition-new(*) {
     animation: none !important;
   }
 

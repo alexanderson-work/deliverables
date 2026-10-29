@@ -60,6 +60,7 @@ export default function MobileNav({ clientName, home, here, current, groups, stu
               {group.items.map((item) => (
                 <SidebarItem key={item.href} href={item.href} current={item.href === current}>
                   {item.label}
+                  {item.href === current && <span className="nav-current" aria-hidden="true" />}
                 </SidebarItem>
               ))}
             </div>
