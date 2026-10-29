@@ -60,7 +60,9 @@ export default function MobileNav({ clientName, home, here, current, groups, con
         lightDismiss
       >
         <SheetTitle>{clientName}</SheetTitle>
-        <nav aria-label="Client space">
+        {/* The menu opens focused on its list, not the close button, so no focus
+            ring shows on open (Safari draws one); Tab moves on to the links. */}
+        <nav aria-label="Client space" tabIndex={-1} ref={(nav) => nav?.setAttribute("autofocus", "")}>
           {groups.map((group, i) => (
             <div key={group.label ?? i} style={{ display: "contents" }}>
               {group.label && <SidebarLabel>{group.label}</SidebarLabel>}

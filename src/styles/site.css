@@ -496,6 +496,10 @@ a.rs-btn-ghost {
   }
 }
 
+.mobile-menu nav:focus {
+  outline: none;
+}
+
 .mobile-menu nav {
   display: flex;
   flex-direction: column;
