@@ -51,7 +51,7 @@ const theme = client.data.theme;
     </a>
     <div class="app-top-bar">
       <Breadcrumbs items={trail} />
-      <ThemeToggle className="rs-theme-toggle-inline" client:idle />
+      <ThemeToggle className="rs-theme-toggle-inline" client:idle transition:persist="theme-toggle" />
     </div>
   </header>
   <div class="mobile-top">
@@ -68,7 +68,8 @@ const theme = client.data.theme;
   </div>
 
   <div class="shell">
-    <div class="shell-rail">
+    <!-- The rail stays mounted from page to page: its scroll, hover, and focus carry over. -->
+    <div class="shell-rail" transition:persist={`rail-${client.id}`}>
       <Sidebar>
         <SidebarNav aria-label="Client space">
           {
@@ -98,7 +99,7 @@ const theme = client.data.theme;
   </div>
 
   <script is:inline>
-    // Keep the current sidebar item in view after a page load.
+    // On a full load, bring the current item into the rail's view before first paint.
     (() => {
       const rail = document.querySelector(".shell-rail .rs-sidebar");
       const item = rail && rail.querySelector('[aria-current="page"]');
@@ -110,15 +111,76 @@ const theme = client.data.theme;
     })();
   </script>
   <script>
-    // The "here" crumb fades in once the page title scrolls under the header,
-    // the way Vlak's crumb bar does. Base.astro starts it hidden before first paint.
+    import { everyPage } from "../lib/page";
+
     const root = document.documentElement;
-    const title = document.querySelector("main h1");
-    if (title) {
+    const scroller = () => document.querySelector<HTMLElement>(".shell-rail .rs-sidebar");
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const inView = (rail: HTMLElement, item: Element) => {
+      const r = rail.getBoundingClientRect();
+      const i = item.getBoundingClientRect();
+      return i.top >= r.top && i.bottom <= r.bottom;
+    };
+
+    // Bring an item into the rail's view if it's outside it.
+    const reveal = (rail: HTMLElement, item: Element, behavior: ScrollBehavior) => {
+      if (inView(rail, item)) return;
+      const r = rail.getBoundingClientRect();
+      const i = item.getBoundingClientRect();
+      rail.scrollTo({ top: rail.scrollTop + i.top - r.top - r.height / 2 + i.height / 2, behavior });
+    };
+
+    // The marker glides only between items in view; from or to one scrolled
+    // out of sight, it fades instead of sliding over the header.
+    document.addEventListener("astro:before-preparation", () => {
+      const rail = scroller();
+      const marker = rail?.querySelector(".nav-current");
+      if (rail && marker) marker.classList.toggle("is-offscreen", !inView(rail, marker));
+    });
+
+    // The rail carries over to the next page as it is (transition:persist), so it
+    // keeps its place; only the current-page state moves, and the marker glides with it.
+    let kept: { rail: HTMLElement; scroll: number } | undefined;
+    document.addEventListener("astro:before-swap", () => {
+      const rail = scroller();
+      kept = rail ? { rail, scroll: rail.scrollTop } : undefined;
+    });
+    document.addEventListener("astro:after-swap", () => {
+      const rail = scroller();
+      if (!rail) return;
+      const persisted = rail === kept?.rail;
+      if (persisted) rail.scrollTop = kept!.scroll;
+      const marker = rail.querySelector(".nav-current") ?? document.createElement("span");
+      marker.className = "nav-current";
+      marker.setAttribute("aria-hidden", "true");
+      let current: HTMLAnchorElement | undefined;
+      for (const link of rail.querySelectorAll<HTMLAnchorElement>("a.rs-sidebar-item")) {
+        const here = link.pathname === location.pathname;
+        if (here) current = link;
+        if (here) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
+      }
+      if (current) {
+        current.append(marker);
+        marker.classList.toggle("is-offscreen", !inView(rail, current));
+        reveal(rail, current, persisted && !still.matches ? "smooth" : "instant");
+      } else {
+        marker.remove();
+      }
+    });
+
+    // The "here" crumb fades in once the page title scrolls under the header,
+    // the way Vlak's crumb bar does. It starts hidden (Base.astro).
+    everyPage((signal) => {
+      const title = document.querySelector("main h1");
+      if (!title) return;
       const top = parseFloat(getComputedStyle(root).getPropertyValue("--top-h")) || 64;
-      new IntersectionObserver(([entry]) => root.classList.toggle("title-in-view", entry.isIntersecting), {
+      const observer = new IntersectionObserver(([entry]) => root.classList.toggle("title-in-view", entry.isIntersecting), {
         rootMargin: `-${top}px 0px 0px 0px`,
-      }).observe(title);
-    }
+      });
+      observer.observe(title);
+      signal.addEventListener("abort", () => observer.disconnect());
+    });
   </script>
 </Base>

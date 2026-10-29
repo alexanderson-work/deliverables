@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from "astro:transitions";
 import "@noorddev/vlak-react/css";
 import "../styles/vlak-classes.css";
 import "../styles/site.css";
@@ -54,6 +55,8 @@ const fontOrigins =
     {fontPreload.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin="" />)}
     <link rel="stylesheet" href={fontStylesheet} />
     {themeCss && <style is:inline set:html={themeCss} />}
+    <!-- Pages change in place, so the sidebar and header stay put between them. -->
+    <ClientRouter />
     <script is:inline>
       // Before first paint: a page opens with its title on screen, so the header's
       // "here" crumb starts hidden (ClientShell reveals it once the title scrolls away).
@@ -71,6 +74,8 @@ const fontOrigins =
   <body>
     <slot />
     <script>
+      import { everyPage } from "../lib/page";
+
       // Switching schemes crossfades the whole page instead of flipping it.
       // Vlak's ThemeToggle watches data-theme on <html>, so its icon follows along.
       const root = document.documentElement;
@@ -111,14 +116,36 @@ const fontOrigins =
         true,
       );
 
-      // Lazy images that haven't arrived yet fade in when they do (see motion.css).
-      for (const img of document.querySelectorAll<HTMLImageElement>('img[loading="lazy"]')) {
-        if (img.complete) continue;
-        img.classList.add("is-loading");
-        const done = () => img.classList.remove("is-loading");
-        img.addEventListener("load", done, { once: true });
-        img.addEventListener("error", done, { once: true });
-      }
+      // The next page arrives without a reload: carry the scheme over, and start it
+      // with the header crumb hidden, as the inline script in <head> does on a load.
+      document.addEventListener("astro:before-swap", (event) => {
+        const next = event.newDocument;
+        const theme = root.dataset.theme;
+        if (theme === "light" || theme === "dark") {
+          next.documentElement.dataset.theme = theme;
+          for (const meta of next.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')) {
+            meta.content = meta.dataset[theme] ?? meta.content;
+          }
+        }
+        next.documentElement.classList.add("title-in-view");
+      });
+
+      everyPage(() => {
+        // Lazy images that haven't arrived yet fade in when they do (see motion.css).
+        for (const img of document.querySelectorAll<HTMLImageElement>('img[loading="lazy"]')) {
+          if (img.complete) continue;
+          img.classList.add("is-loading");
+          const done = () => img.classList.remove("is-loading");
+          img.addEventListener("load", done, { once: true });
+          img.addEventListener("error", done, { once: true });
+        }
+        // Pages load ahead on hover; files (brand kits, PDFs) wait for a click.
+        for (const link of document.querySelectorAll<HTMLAnchorElement>("a[href]")) {
+          if (link.origin === location.origin && (link.hasAttribute("download") || /\.\w+$/.test(link.pathname))) {
+            link.dataset.astroPrefetch = "false";
+          }
+        }
+      });
     </script>
   </body>
 </html>

@@ -167,45 +167,52 @@ const groundStyle = `--ground-light: ${brand.grounds.light}; --ground-dark: ${br
 </ClientShell>
 
 <script>
-  const status = document.getElementById("copy-status");
-  for (const button of document.querySelectorAll<HTMLButtonElement>("button[data-copy]")) {
-    let timer: number | undefined;
-    button.addEventListener("click", async () => {
-      const value = button.dataset.copy!;
-      try {
-        await navigator.clipboard.writeText(value);
-        if (status) status.textContent = `Copied ${value}`;
-        // Confirm: the icon turns to a check for a moment.
-        button.classList.add("is-copied");
-        clearTimeout(timer);
-        timer = window.setTimeout(() => button.classList.remove("is-copied"), 1200);
-      } catch {
-        if (status) status.textContent = "Copy failed. Select the value and copy it manually.";
-      }
-    });
-  }
+  import { everyPage } from "../../lib/page";
 
-  // Looping previews play only while on screen, and never under reduced motion.
   const still = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const videos = [...document.querySelectorAll<HTMLVideoElement>("video[data-inview-play]")];
-  const visible = new Set<HTMLVideoElement>();
-  const sync = () => {
-    for (const v of videos) {
-      if (!still.matches && visible.has(v)) v.play().catch(() => {});
-      else v.pause();
+
+  everyPage((signal) => {
+    const status = document.getElementById("copy-status");
+    for (const button of document.querySelectorAll<HTMLButtonElement>("button[data-copy]")) {
+      let timer: number | undefined;
+      button.addEventListener("click", async () => {
+        const value = button.dataset.copy!;
+        try {
+          await navigator.clipboard.writeText(value);
+          if (status) status.textContent = `Copied ${value}`;
+          // Confirm: the icon turns to a check for a moment.
+          button.classList.add("is-copied");
+          clearTimeout(timer);
+          timer = window.setTimeout(() => button.classList.remove("is-copied"), 1200);
+        } catch {
+          if (status) status.textContent = "Copy failed. Select the value and copy it manually.";
+        }
+      });
     }
-  };
-  const observer = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        const v = e.target as HTMLVideoElement;
-        if (e.isIntersecting) visible.add(v);
-        else visible.delete(v);
+
+    // Looping previews play only while on screen, and never under reduced motion.
+    const videos = [...document.querySelectorAll<HTMLVideoElement>("video[data-inview-play]")];
+    if (!videos.length) return;
+    const visible = new Set<HTMLVideoElement>();
+    const sync = () => {
+      for (const v of videos) {
+        if (!still.matches && visible.has(v)) v.play().catch(() => {});
+        else v.pause();
       }
-      sync();
-    },
-    { threshold: 0.5 },
-  );
-  videos.forEach((v) => observer.observe(v));
-  still.addEventListener("change", sync);
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting) visible.add(v);
+          else visible.delete(v);
+        }
+        sync();
+      },
+      { threshold: 0.5 },
+    );
+    videos.forEach((v) => observer.observe(v));
+    still.addEventListener("change", sync, { signal });
+    signal.addEventListener("abort", () => observer.disconnect());
+  });
 </script>

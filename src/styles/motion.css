@@ -33,11 +33,12 @@
 }
 
 /* ── Page to page ──
-   One crossfade for everything, old out and new in on the same curve at the
-   same time. Their opacities always sum to one, so whatever is identical on
-   both pages (paper, header, rail) holds perfectly still, and only what changed
-   fades. The new page's content then arrives in sequence (Arrival below), and
-   the nav marker glides to its new item. */
+   Astro's ClientRouter swaps pages in place inside a view transition (the
+   at-rule below covers any full load). One crossfade for everything, old out
+   and new in on the same curve at the same time. Their opacities always sum to
+   one, so whatever is identical on both pages (paper, header, rail) holds
+   perfectly still, and only what changed fades. The new page's content then
+   arrives in sequence (Arrival below), and the nav marker glides to its new item. */
 
 @view-transition {
   navigation: auto;
@@ -135,11 +136,15 @@
 }
 
 /* ── Nav marker ──
-   The current-page marker glides from the old item to the new one while the
-   rest of the rail holds still. */
+   The rail stays mounted between pages (ClientShell), and the current-page
+   marker glides from the old item to the new one while the rest holds still. */
 
 .shell-rail .nav-current {
   view-transition-name: nav-current;
+}
+
+.shell-rail .nav-current.is-offscreen {
+  view-transition-name: none;
 }
 
 ::view-transition-group(nav-current) {

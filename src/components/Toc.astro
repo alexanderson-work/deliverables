@@ -27,15 +27,18 @@ const items = Astro.props.headings.filter((h) => h.depth === 2);
 }
 
 <script>
-  // Mark the section currently in view, and move the marker to it.
-  const list = document.querySelector<HTMLElement>(".toc-track");
-  const marker = document.querySelector<HTMLElement>(".toc-marker");
-  const links = [...document.querySelectorAll<HTMLAnchorElement>(".toc a")];
-  const targets = links
-    .map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))))
-    .filter((el): el is HTMLElement => el !== null);
+  import { everyPage } from "../lib/page";
 
-  if (list && marker && targets.length) {
+  // Mark the section currently in view, and move the marker to it.
+  everyPage((signal) => {
+    const list = document.querySelector<HTMLElement>(".toc-track");
+    const marker = document.querySelector<HTMLElement>(".toc-marker");
+    const links = [...document.querySelectorAll<HTMLAnchorElement>(".toc a")];
+    const targets = links
+      .map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))))
+      .filter((el): el is HTMLElement => el !== null);
+    if (!list || !marker || !targets.length) return;
+
     let current: HTMLAnchorElement | undefined;
     const update = () => {
       const line = window.innerHeight * 0.3;
@@ -62,11 +65,15 @@ const items = Astro.props.headings.filter((h) => h.depth === 2);
           update();
         });
       },
-      { passive: true },
+      { passive: true, signal },
     );
-    window.addEventListener("resize", () => {
-      current = undefined;
-      update();
-    });
-  }
+    window.addEventListener(
+      "resize",
+      () => {
+        current = undefined;
+        update();
+      },
+      { signal },
+    );
+  });
 </script>
