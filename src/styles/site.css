@@ -148,9 +148,11 @@ a.rs-btn-ghost {
   z-index: var(--z-sticky);
 }
 
-/* The list scrolls; search above it stays put. */
+/* The list scrolls; search above it stays put. It fills the rail inside its
+   border rather than taking Vlak's fixed width, which would cover the border. */
 .shell-rail > .rs-sidebar {
   flex: 1;
+  width: auto;
   min-height: 0;
   border-width: 0;
   overflow-y: auto;
