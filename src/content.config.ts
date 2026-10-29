@@ -59,6 +59,25 @@ const brand = z.object({
     .default([]),
 });
 
+const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
+const scheme = z.object({ paper: hex, ink: hex, fill: hex.optional() });
+
+/** A client space can wear the client's own brand: type, colors, logo, and favicon. */
+const theme = z.object({
+  font: z
+    .object({
+      family: z.string().regex(/^[\w -]+$/),
+      /** A stylesheet that defines the family, e.g. a Google Fonts CSS URL. */
+      stylesheet: z.url(),
+    })
+    .optional(),
+  light: scheme.optional(),
+  dark: scheme.optional(),
+  /** Logo lockup for the header, one per scheme. */
+  logo: z.object({ light: z.string(), dark: z.string() }).optional(),
+  favicon: z.string().optional(),
+});
+
 /** One file per client: src/content/clients/<slug>.yaml. The slug is the URL. */
 const clients = defineCollection({
   loader: glob({ pattern: "*.yaml", base: "./src/content/clients" }),
@@ -71,6 +90,7 @@ const clients = defineCollection({
     project: z
       .array(z.object({ label: z.string(), value: z.string(), href: z.string().optional() }))
       .default([]),
+    theme: theme.optional(),
     brand: brand.optional(),
     resources: z.array(z.object({ group: z.string(), items: z.array(link) })).default([]),
   }),

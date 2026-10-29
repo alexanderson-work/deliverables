@@ -2,14 +2,29 @@
 import "@noorddev/vlak-react/css";
 import "../styles/vlak-classes.css";
 import "../styles/site.css";
+import "../styles/motion.css";
 import "../styles/brand.css";
 
 interface Props {
   title: string;
   description?: string;
+  /** Stylesheet for the type family; defaults to Satoshi, the studio's own. */
+  fontStylesheet?: string;
+  favicon?: string;
+  /** A client's brand tokens, from lib/theme. */
+  themeCss?: string;
 }
 
-const { title, description } = Astro.props;
+// Satoshi, served by Fontshare (ITF Free Font License). The font files stay out of this repo.
+const SATOSHI = "https://api.fontshare.com/v2/css?f[]=satoshi@1,2&display=swap";
+
+const { title, description, fontStylesheet = SATOSHI, favicon = "/favicon.svg", themeCss } = Astro.props;
+const fontOrigins =
+  fontStylesheet === SATOSHI
+    ? ["https://api.fontshare.com", "https://cdn.fontshare.com"]
+    : fontStylesheet.startsWith("https://fonts.googleapis.com")
+      ? ["https://fonts.googleapis.com", "https://fonts.gstatic.com"]
+      : [];
 ---
 
 <!doctype html>
@@ -20,11 +35,10 @@ const { title, description } = Astro.props;
     <meta name="robots" content="noindex, nofollow" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <!-- Satoshi, served by Fontshare (ITF Free Font License). The font files stay out of this repo. -->
-    <link rel="preconnect" href="https://api.fontshare.com" />
-    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
-    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@1,2&display=swap" />
+    <link rel="icon" href={favicon} type={favicon.endsWith(".svg") ? "image/svg+xml" : undefined} />
+    {fontOrigins.map((origin, i) => <link rel="preconnect" href={origin} crossorigin={i === 1 ? "" : undefined} />)}
+    <link rel="stylesheet" href={fontStylesheet} />
+    {themeCss && <style is:inline set:html={themeCss} />}
     <script is:inline>
       // Apply the stored scheme before paint so there is no flash.
       try {
@@ -35,5 +49,35 @@ const { title, description } = Astro.props;
   </head>
   <body>
     <slot />
+    <script>
+      // Switching schemes crossfades the whole page instead of flipping it.
+      // Vlak's ThemeToggle watches data-theme on <html>, so its icon follows along.
+      const root = document.documentElement;
+      const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+      document.addEventListener(
+        "click",
+        (event) => {
+          const toggle = (event.target as Element | null)?.closest(".rs-theme-toggle");
+          if (!toggle || !document.startViewTransition || still.matches) return;
+          event.stopPropagation();
+          const explicit = root.dataset.theme;
+          const dark = explicit === "dark" || (explicit !== "light" && systemDark.matches);
+          const next = dark ? "light" : "dark";
+          root.classList.add("theme-switching");
+          const transition = document.startViewTransition(async () => {
+            root.dataset.theme = next;
+            try {
+              localStorage.setItem("vlak-theme", next);
+            } catch {}
+            // Give the toggle a moment to swap its icon before the new frame is captured.
+            await new Promise((resolve) => setTimeout(resolve, 30));
+          });
+          transition.finished.finally(() => root.classList.remove("theme-switching"));
+        },
+        true,
+      );
+    </script>
   </body>
 </html>

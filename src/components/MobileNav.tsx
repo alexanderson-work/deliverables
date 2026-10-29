@@ -13,16 +13,25 @@ interface Props {
   current: string;
   groups: NavGroup[];
   studio: { name: string; url: string };
+  /** The client's lockup, one file per scheme. */
+  logo?: { light: string; dark: string };
 }
 
 /** Phone and tablet chrome: name, current page, and one menu button. */
-export default function MobileNav({ clientName, home, here, current, groups, studio }: Props) {
+export default function MobileNav({ clientName, home, here, current, groups, studio, logo }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
     <div className="mobile-bar">
       <a className="mobile-bar-name" href={home}>
-        {clientName}
+        {logo ? (
+          <>
+            <img className="lockup lockup--light" src={logo.light} alt={clientName} />
+            <img className="lockup lockup--dark" src={logo.dark} alt={clientName} />
+          </>
+        ) : (
+          clientName
+        )}
       </a>
       <span className="mobile-bar-here">{here}</span>
       <Button

@@ -12,32 +12,49 @@ const items = Astro.props.headings.filter((h) => h.depth === 2);
   items.length > 1 && (
     <nav class="toc" aria-label="On this page">
       <p>On this page</p>
-      <ol>
-        {items.map((h) => (
-          <li>
-            <a href={`#${h.slug}`}>{h.text}</a>
-          </li>
-        ))}
-      </ol>
+      <div class="toc-track">
+        <ol>
+          {items.map((h) => (
+            <li>
+              <a href={`#${h.slug}`}>{h.text}</a>
+            </li>
+          ))}
+        </ol>
+        <span class="toc-marker" aria-hidden="true" />
+      </div>
     </nav>
   )
 }
 
 <script>
-  // Mark the section currently in view.
+  // Mark the section currently in view, and move the marker to it.
+  const list = document.querySelector<HTMLElement>(".toc-track");
+  const marker = document.querySelector<HTMLElement>(".toc-marker");
   const links = [...document.querySelectorAll<HTMLAnchorElement>(".toc a")];
   const targets = links
     .map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))))
     .filter((el): el is HTMLElement => el !== null);
 
-  if (targets.length) {
+  if (list && marker && targets.length) {
+    let current: HTMLAnchorElement | undefined;
     const update = () => {
       const line = window.innerHeight * 0.3;
       let active = targets[0];
       for (const t of targets) if (t.getBoundingClientRect().top <= line) active = t;
-      for (const a of links) a.setAttribute("aria-current", String(a.hash === `#${active.id}`));
+      const link = links.find((a) => a.hash === `#${active.id}`);
+      if (!link || link === current) return;
+      current = link;
+      for (const a of links) a.setAttribute("aria-current", String(a === link));
+      list.style.setProperty("--toc-y", `${link.offsetTop}px`);
+      list.style.setProperty("--toc-h", `${link.offsetHeight}px`);
     };
     update();
+    // Place the marker without motion first; only later changes glide.
+    requestAnimationFrame(() => requestAnimationFrame(() => marker.classList.add("is-ready")));
     document.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", () => {
+      current = undefined;
+      update();
+    });
   }
 </script>

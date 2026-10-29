@@ -55,11 +55,11 @@ const groundStyle = `--ground-light: ${brand.grounds.light}; --ground-dark: ${br
                   <video
                     src={item.preview}
                     poster={item.poster}
-                    autoplay
                     muted
                     loop
                     playsinline
                     preload="metadata"
+                    data-inview-play
                     aria-label={`${group.group}, ${item.name}`}
                   />
                 ) : (
@@ -103,19 +103,28 @@ const groundStyle = `--ground-light: ${brand.grounds.light}; --ground-dark: ${br
               <p class="swatch-values">
                 <button class="copy" type="button" data-copy={color.hex.toUpperCase()}>
                   <span>{color.hex.toUpperCase()}</span>
-                  <Icon name="copy" size={12} aria-hidden="true" />
+                  <span class="copy-icon" aria-hidden="true">
+                    <Icon name="copy" size={12} />
+                    <Icon name="copied" size={12} />
+                  </span>
                 </button>
                 <br />
                 <button class="copy" type="button" data-copy={`rgb(${rgb(color.hex).replaceAll(" ", ", ")})`}>
                   <span>RGB {rgb(color.hex)}</span>
-                  <Icon name="copy" size={12} aria-hidden="true" />
+                  <span class="copy-icon" aria-hidden="true">
+                    <Icon name="copy" size={12} />
+                    <Icon name="copied" size={12} />
+                  </span>
                 </button>
                 {color.cmyk && (
                   <>
                     <br />
                     <button class="copy" type="button" data-copy={color.cmyk}>
                       <span>CMYK {color.cmyk}</span>
-                      <Icon name="copy" size={12} aria-hidden="true" />
+                      <span class="copy-icon" aria-hidden="true">
+                    <Icon name="copy" size={12} />
+                    <Icon name="copied" size={12} />
+                  </span>
                     </button>
                   </>
                 )}
@@ -159,18 +168,43 @@ const groundStyle = `--ground-light: ${brand.grounds.light}; --ground-dark: ${br
 <script>
   const status = document.getElementById("copy-status");
   for (const button of document.querySelectorAll<HTMLButtonElement>("button[data-copy]")) {
+    let timer: number | undefined;
     button.addEventListener("click", async () => {
       const value = button.dataset.copy!;
       try {
         await navigator.clipboard.writeText(value);
         if (status) status.textContent = `Copied ${value}`;
-        const label = button.querySelector("span")!;
-        const text = label.textContent;
-        label.textContent = "Copied";
-        setTimeout(() => (label.textContent = text), 1200);
+        // Confirm: the icon turns to a check for a moment.
+        button.classList.add("is-copied");
+        clearTimeout(timer);
+        timer = window.setTimeout(() => button.classList.remove("is-copied"), 1200);
       } catch {
         if (status) status.textContent = "Copy failed. Select the value and copy it manually.";
       }
     });
   }
+
+  // Looping previews play only while on screen, and never under reduced motion.
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const videos = [...document.querySelectorAll<HTMLVideoElement>("video[data-inview-play]")];
+  const visible = new Set<HTMLVideoElement>();
+  const sync = () => {
+    for (const v of videos) {
+      if (!still.matches && visible.has(v)) v.play().catch(() => {});
+      else v.pause();
+    }
+  };
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        const v = e.target as HTMLVideoElement;
+        if (e.isIntersecting) visible.add(v);
+        else visible.delete(v);
+      }
+      sync();
+    },
+    { threshold: 0.5 },
+  );
+  videos.forEach((v) => observer.observe(v));
+  still.addEventListener("change", sync);
 </script>

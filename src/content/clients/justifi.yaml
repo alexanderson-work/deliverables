@@ -1,6 +1,23 @@
 name: JustiFi
 summary: Finished brand assets for JustiFi’s updated visual identity, and the guidebook for running the website in Framer.
 
+# The space wears JustiFi's brand: Mulish, navy ink by day, the site's navy at night.
+theme:
+  font:
+    family: Mulish
+    stylesheet: https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap
+  light:
+    paper: "#FFFFFF"
+    ink: "#0D1A27"
+  dark:
+    paper: "#0D1A27"
+    ink: "#FFFFFF"
+    fill: "#152C42"
+  logo:
+    light: /clients/justifi/brand/primary-logo-navy-amber.svg
+    dark: /clients/justifi/brand/primary-logo-white-amber.svg
+  favicon: /clients/justifi/brand/brand-icon-amber.svg
+
 project:
   - label: Scope
     value: Visual identity and website

@@ -1,18 +1,11 @@
 ---
-import {
-  Breadcrumbs,
-  Sidebar,
-  SidebarFoot,
-  SidebarHead,
-  SidebarItem,
-  SidebarLabel,
-  SidebarNav,
-} from "@noorddev/vlak-react";
+import { Breadcrumbs, Sidebar, SidebarFoot, SidebarItem, SidebarLabel, SidebarNav } from "@noorddev/vlak-react";
 import { ThemeToggle } from "@noorddev/vlak-react/components/theme-toggle";
 import Base from "./Base.astro";
 import MobileNav from "../components/MobileNav";
 import { clientNav } from "../components/ClientNav";
 import { clientUrl, type Client } from "../lib/content";
+import { themeCss } from "../lib/theme";
 import { siteTitle, studio } from "../site.config";
 
 interface Props {
@@ -20,23 +13,60 @@ interface Props {
   /** Page title; omit on the overview. */
   title?: string;
   description?: string;
-  /** Breadcrumb trail after the client name. */
+  /** Breadcrumb trail; the client name sits at the left of the header. */
   trail?: { label: string; href?: string }[];
 }
 
-const { client, title, description, trail = [] } = Astro.props;
+const { client, title, description, trail = [{ label: "Overview" }] } = Astro.props;
 const home = clientUrl(client);
 const current = Astro.url.pathname;
 const groups = await clientNav(client);
-const crumbs = [{ label: client.data.name, href: trail.length ? home : undefined }, ...trail];
 const here = title ?? "Overview";
+const theme = client.data.theme;
 ---
 
-<Base title={`${title ? `${title} · ` : ""}${client.data.name} · ${siteTitle}`} description={description}>
+<Base
+  title={`${title ? `${title} · ` : ""}${client.data.name} · ${siteTitle}`}
+  description={description}
+  fontStylesheet={theme?.font?.stylesheet}
+  favicon={theme?.favicon}
+  themeCss={themeCss(theme)}
+>
+  <!-- One full-width header, so browsers that tint their toolbar from a pinned header (Safari 26) find it. -->
+  <header class="app-top">
+    <a class="app-top-name" href={home}>
+      {
+        theme?.logo ? (
+          <>
+            <img class="lockup lockup--light" src={theme.logo.light} alt={client.data.name} />
+            <img class="lockup lockup--dark" src={theme.logo.dark} alt={client.data.name} />
+          </>
+        ) : (
+          client.data.name
+        )
+      }
+    </a>
+    <div class="app-top-bar">
+      <Breadcrumbs items={trail} />
+      <ThemeToggle className="rs-theme-toggle-inline" client:idle />
+    </div>
+  </header>
+  <div class="mobile-top">
+    <MobileNav
+      client:media="(max-width: 1023px)"
+      clientName={client.data.name}
+      home={home}
+      here={here}
+      current={current}
+      groups={groups}
+      studio={studio}
+      logo={theme?.logo}
+    />
+  </div>
+
   <div class="shell">
     <div class="shell-rail">
       <Sidebar>
-        <SidebarHead><a href={home}>{client.data.name}</a></SidebarHead>
         <SidebarNav aria-label="Client space">
           {
             groups.map((group) => (
@@ -58,25 +88,39 @@ const here = title ?? "Overview";
       </Sidebar>
     </div>
 
-    <div class="shell-main">
-      <header class="page-top">
-        <Breadcrumbs items={crumbs} />
-        <ThemeToggle className="rs-theme-toggle-inline" client:idle />
-      </header>
-      <div class="mobile-top">
-        <MobileNav
-          client:media="(max-width: 1023px)"
-          clientName={client.data.name}
-          home={home}
-          here={here}
-          current={current}
-          groups={groups}
-          studio={studio}
-        />
-      </div>
-      <main class="page" id="main">
-        <slot />
-      </main>
-    </div>
+    <main class="page" id="main">
+      <slot />
+    </main>
   </div>
+
+  <script is:inline>
+    // Before first paint: hide the header's "here" crumb while the page title is on screen,
+    // and keep the current sidebar item in view after a page load.
+    (() => {
+      const root = document.documentElement;
+      const title = document.querySelector("main h1");
+      const top = parseFloat(getComputedStyle(root).getPropertyValue("--top-h")) || 64;
+      if (title && title.getBoundingClientRect().bottom > top) root.classList.add("title-in-view");
+
+      const rail = document.querySelector(".shell-rail .rs-sidebar");
+      const item = rail && rail.querySelector('[aria-current="page"]');
+      if (item) {
+        const r = rail.getBoundingClientRect();
+        const i = item.getBoundingClientRect();
+        if (i.top < r.top || i.bottom > r.bottom) rail.scrollTop += i.top - r.top - r.height / 2 + i.height / 2;
+      }
+    })();
+  </script>
+  <script>
+    // The "here" crumb fades in once the page title scrolls under the header,
+    // the way Vlak's crumb bar does.
+    const root = document.documentElement;
+    const title = document.querySelector("main h1");
+    if (title) {
+      const top = parseFloat(getComputedStyle(root).getPropertyValue("--top-h")) || 64;
+      new IntersectionObserver(([entry]) => root.classList.toggle("title-in-view", entry.isIntersecting), {
+        rootMargin: `-${top}px 0px 0px 0px`,
+      }).observe(title);
+    }
+  </script>
 </Base>
