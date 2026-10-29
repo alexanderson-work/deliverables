@@ -15,6 +15,28 @@ body {
   margin: 0;
 }
 
+/* Vlak's fixed grid-line overlay is off: its lines sat behind every scrolling
+   rule and read as shimmer while scrolling. The module grid still sets the layout. */
+html::before {
+  display: none;
+}
+
+/* Headings take the heading family; studio pages use one family for both. */
+h1,
+h2,
+h3,
+h4,
+.rs-t-xl,
+.rs-t-display,
+.rs-t-title,
+.rs-sheet-title,
+.row-title,
+.asset-name,
+.swatch-name,
+.pager strong {
+  font-family: var(--font-heading, var(--font-sans));
+}
+
 a.rs-btn-primary,
 a.rs-btn-ghost {
   text-decoration: none;
@@ -28,11 +50,26 @@ a.rs-btn-ghost {
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: 204px minmax(0, 1fr);
   height: var(--top-h);
   background-color: var(--bg);
   border-bottom: 1px solid var(--divider);
+}
+
+/* The header's paper continues up past the top of the page. Browsers that draw
+   content under a translucent toolbar (Safari 26) show this instead of whatever
+   has scrolled up behind it. Off-screen everywhere else. */
+.app-top::before,
+.mobile-top::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 100%;
+  height: 120px;
+  background-color: var(--bg);
+  pointer-events: none;
 }
 
 .app-top-name {
@@ -304,7 +341,7 @@ a.rs-btn-ghost {
 .row::before {
   content: "";
   position: absolute;
-  inset: 0 -12px -1px;
+  inset: 0 -12px;
   z-index: -1;
   background-color: transparent;
   transition: var(--transition);

@@ -28,7 +28,9 @@ export function themeCss(theme: Theme | undefined): string {
   if (!theme) return "";
   const css: string[] = [];
   if (theme.font) {
-    css.push(`:root:root { --font-sans: "${theme.font.family}", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }`);
+    const stack = (family: string) => `"${family}", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif`;
+    const { body, heading = body } = theme.font;
+    css.push(`:root:root { --font-sans: ${stack(body)}; --font-heading: ${stack(heading)}; }`);
   }
   if (theme.light) {
     const light = tokens(theme.light);
@@ -41,4 +43,10 @@ export function themeCss(theme: Theme | undefined): string {
     css.push(`@media (prefers-color-scheme: dark) { :root:root:not([data-theme="light"]) { ${dark} } }`);
   }
   return css.join("\n");
+}
+
+/** The page color per scheme, for the browser's theme-color. */
+export function themePaper(theme: Theme | undefined): { light: string; dark: string } | undefined {
+  if (!theme?.light && !theme?.dark) return undefined;
+  return { light: theme.light?.paper ?? "#FAF8F2", dark: theme.dark?.paper ?? "#0E0C0A" };
 }

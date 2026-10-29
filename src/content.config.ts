@@ -66,9 +66,17 @@ const scheme = z.object({ paper: hex, ink: hex, fill: hex.optional() });
 const theme = z.object({
   font: z
     .object({
-      family: z.string().regex(/^[\w -]+$/),
-      /** A stylesheet that defines the family, e.g. a Google Fonts CSS URL. */
-      stylesheet: z.url(),
+      /** Family for body text and UI. */
+      body: z.string().regex(/^[\w -]+$/),
+      /** Family for headings; defaults to the body family. */
+      heading: z
+        .string()
+        .regex(/^[\w -]+$/)
+        .optional(),
+      /** A stylesheet that defines the families: a path in public/ or a font service URL. */
+      stylesheet: z.string(),
+      /** Font files to preload, usually the Latin subsets of the body and heading faces. */
+      preload: z.array(z.string()).default([]),
     })
     .optional(),
   light: scheme.optional(),

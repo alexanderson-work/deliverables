@@ -8,17 +8,29 @@ import "../styles/brand.css";
 interface Props {
   title: string;
   description?: string;
-  /** Stylesheet for the type family; defaults to Satoshi, the studio's own. */
+  /** Stylesheet for the type families; defaults to Satoshi, the studio's own. */
   fontStylesheet?: string;
+  /** Font files to preload so text doesn't swap after the first paint. */
+  fontPreload?: string[];
   favicon?: string;
   /** A client's brand tokens, from lib/theme. */
   themeCss?: string;
+  /** Page color per scheme, for the browser chrome. */
+  paper?: { light: string; dark: string };
 }
 
 // Satoshi, served by Fontshare (ITF Free Font License). The font files stay out of this repo.
 const SATOSHI = "https://api.fontshare.com/v2/css?f[]=satoshi@1,2&display=swap";
 
-const { title, description, fontStylesheet = SATOSHI, favicon = "/favicon.svg", themeCss } = Astro.props;
+const {
+  title,
+  description,
+  fontStylesheet = SATOSHI,
+  fontPreload = [],
+  favicon = "/favicon.svg",
+  themeCss,
+  paper = { light: "#FAF8F2", dark: "#0E0C0A" },
+} = Astro.props;
 const fontOrigins =
   fontStylesheet === SATOSHI
     ? ["https://api.fontshare.com", "https://cdn.fontshare.com"]
@@ -35,15 +47,21 @@ const fontOrigins =
     <meta name="robots" content="noindex, nofollow" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    <meta name="theme-color" content={paper.light} media="(prefers-color-scheme: light)" data-light={paper.light} data-dark={paper.dark} />
+    <meta name="theme-color" content={paper.dark} media="(prefers-color-scheme: dark)" data-light={paper.light} data-dark={paper.dark} />
     <link rel="icon" href={favicon} type={favicon.endsWith(".svg") ? "image/svg+xml" : undefined} />
     {fontOrigins.map((origin, i) => <link rel="preconnect" href={origin} crossorigin={i === 1 ? "" : undefined} />)}
+    {fontPreload.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin="" />)}
     <link rel="stylesheet" href={fontStylesheet} />
     {themeCss && <style is:inline set:html={themeCss} />}
     <script is:inline>
-      // Apply the stored scheme before paint so there is no flash.
+      // Apply the stored scheme before paint so there is no flash, and tint the browser chrome to match.
       try {
         const theme = localStorage.getItem("vlak-theme");
-        if (theme === "dark" || theme === "light") document.documentElement.dataset.theme = theme;
+        if (theme === "dark" || theme === "light") {
+          document.documentElement.dataset.theme = theme;
+          for (const meta of document.querySelectorAll('meta[name="theme-color"]')) meta.content = meta.dataset[theme];
+        }
       } catch {}
     </script>
   </head>
@@ -56,21 +74,32 @@ const fontOrigins =
       const still = window.matchMedia("(prefers-reduced-motion: reduce)");
       const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
 
+      const setScheme = (next: "light" | "dark") => {
+        root.dataset.theme = next;
+        for (const meta of document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')) {
+          meta.content = meta.dataset[next] ?? meta.content;
+        }
+        try {
+          localStorage.setItem("vlak-theme", next);
+        } catch {}
+      };
+
       document.addEventListener(
         "click",
         (event) => {
           const toggle = (event.target as Element | null)?.closest(".rs-theme-toggle");
-          if (!toggle || !document.startViewTransition || still.matches) return;
+          if (!toggle) return;
           event.stopPropagation();
           const explicit = root.dataset.theme;
           const dark = explicit === "dark" || (explicit !== "light" && systemDark.matches);
           const next = dark ? "light" : "dark";
+          if (!document.startViewTransition || still.matches) {
+            setScheme(next);
+            return;
+          }
           root.classList.add("theme-switching");
           const transition = document.startViewTransition(async () => {
-            root.dataset.theme = next;
-            try {
-              localStorage.setItem("vlak-theme", next);
-            } catch {}
+            setScheme(next);
             // Give the toggle a moment to swap its icon before the new frame is captured.
             await new Promise((resolve) => setTimeout(resolve, 30));
           });
@@ -78,6 +107,15 @@ const fontOrigins =
         },
         true,
       );
+
+      // Lazy images that haven't arrived yet fade in when they do (see motion.css).
+      for (const img of document.querySelectorAll<HTMLImageElement>('img[loading="lazy"]')) {
+        if (img.complete) continue;
+        img.classList.add("is-loading");
+        const done = () => img.classList.remove("is-loading");
+        img.addEventListener("load", done, { once: true });
+        img.addEventListener("error", done, { once: true });
+      }
     </script>
   </body>
 </html>

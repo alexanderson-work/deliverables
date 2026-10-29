@@ -5,7 +5,7 @@ import Base from "./Base.astro";
 import MobileNav from "../components/MobileNav";
 import { clientNav } from "../components/ClientNav";
 import { clientUrl, type Client } from "../lib/content";
-import { themeCss } from "../lib/theme";
+import { themeCss, themePaper } from "../lib/theme";
 import { siteTitle, studio } from "../site.config";
 
 interface Props {
@@ -29,8 +29,10 @@ const theme = client.data.theme;
   title={`${title ? `${title} · ` : ""}${client.data.name} · ${siteTitle}`}
   description={description}
   fontStylesheet={theme?.font?.stylesheet}
+  fontPreload={theme?.font?.preload}
   favicon={theme?.favicon}
   themeCss={themeCss(theme)}
+  paper={themePaper(theme)}
 >
   <!-- One full-width header, so browsers that tint their toolbar from a pinned header (Safari 26) find it. -->
   <header class="app-top">

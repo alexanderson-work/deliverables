@@ -1,11 +1,15 @@
 name: JustiFi
 summary: Finished brand assets for JustiFi’s updated visual identity, and the guidebook for running the website in Framer.
 
-# The space wears JustiFi's brand: Mulish, navy ink by day, the site's navy at night.
+# The space wears JustiFi's brand: Mulish headings, Lato body, navy ink by day, the site's navy at night.
 theme:
   font:
-    family: Mulish
-    stylesheet: https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap
+    heading: Mulish
+    body: Lato
+    stylesheet: /clients/justifi/fonts/fonts.css
+    preload:
+      - /clients/justifi/fonts/lato-latin-400-normal.woff2
+      - /clients/justifi/fonts/mulish-latin-wght-normal.woff2
   light:
     paper: "#FFFFFF"
     ink: "#0D1A27"

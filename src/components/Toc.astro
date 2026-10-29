@@ -51,7 +51,19 @@ const items = Astro.props.headings.filter((h) => h.depth === 2);
     update();
     // Place the marker without motion first; only later changes glide.
     requestAnimationFrame(() => requestAnimationFrame(() => marker.classList.add("is-ready")));
-    document.addEventListener("scroll", update, { passive: true });
+    let queued = false;
+    document.addEventListener(
+      "scroll",
+      () => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(() => {
+          queued = false;
+          update();
+        });
+      },
+      { passive: true },
+    );
     window.addEventListener("resize", () => {
       current = undefined;
       update();

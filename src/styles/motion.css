@@ -1,12 +1,34 @@
 /* Motion, in Vlak's language.
-   One curve (--ease) and Vlak's durations: --duration-snap 0.1s,
+   One curve (--ease, cubic-bezier(0.3, 0, 0.2, 1)) and Vlak's durations:
    --duration 0.2s, --duration-confirm 0.3s, --duration-deliberate 0.4s.
    "A state the user caused may ease, snap with a short curve, or confirm.
-   Entry is not a show. Color and opacity name the change; nothing bounces."
-   Nothing here plays on page load, and all of it stops under reduced motion. */
+   Color and opacity name the change; nothing bounces."
+   Motion answers the reader: nothing plays on its own, and all of it stops
+   under prefers-reduced-motion. */
+
+@keyframes motion-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes motion-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* The same 8px settle vlak.dev uses for content arriving. */
+@keyframes motion-settle {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
 
 /* ── Page to page ──
-   Same-origin navigations crossfade the page while the header and rail stay put. */
+   The header and rail hold still. The old page lets go quickly and the new one
+   settles into place, so the eye stays on the content. */
 
 @view-transition {
   navigation: auto;
@@ -24,11 +46,12 @@
   view-transition-name: mobile-top;
 }
 
-::view-transition-group(*),
-::view-transition-old(*),
-::view-transition-new(*) {
-  animation-duration: var(--duration);
-  animation-timing-function: var(--ease);
+::view-transition-old(root) {
+  animation: motion-fade-out var(--duration) var(--ease) both;
+}
+
+::view-transition-new(root) {
+  animation: motion-settle var(--duration-deliberate) var(--ease) both;
 }
 
 html:not(.theme-switching)::view-transition-group(app-top),
@@ -44,11 +67,14 @@ html:not(.theme-switching)::view-transition-new(mobile-top) {
 }
 
 /* ── Light and dark ──
-   Switching schemes confirms: the whole page crossfades (see Base.astro). */
+   A deliberate crossfade of everything at once, with no movement. */
 
-html.theme-switching::view-transition-old(*),
+html.theme-switching::view-transition-old(*) {
+  animation: motion-fade-out var(--duration-deliberate) var(--ease) both;
+}
+
 html.theme-switching::view-transition-new(*) {
-  animation-duration: var(--duration-confirm);
+  animation: motion-fade-in var(--duration-deliberate) var(--ease) both;
 }
 
 /* ── Header trail ──
@@ -58,7 +84,7 @@ html.theme-switching::view-transition-new(*) {
 .app-top .rs-crumbs-item:last-child,
 .mobile-bar-here {
   transition:
-    opacity var(--duration) var(--ease),
+    opacity var(--duration-confirm) var(--ease),
     visibility 0s linear;
 }
 
@@ -67,33 +93,38 @@ html.title-in-view .mobile-bar-here {
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity var(--duration) var(--ease),
-    visibility 0s linear var(--duration);
+    opacity var(--duration-confirm) var(--ease),
+    visibility 0s linear var(--duration-confirm);
 }
 
 /* ── Outline marker ──
-   Snaps to the section being read with a short curve. */
+   Glides to the section being read. */
 
 .toc-marker.is-ready {
   transition:
-    transform var(--duration) var(--ease),
-    height var(--duration) var(--ease);
+    transform var(--duration-confirm) var(--ease),
+    height var(--duration-confirm) var(--ease);
 }
 
 /* ── Rows and tiles ── */
 
 .row-go {
   opacity: 0;
-  transition: opacity var(--duration) var(--ease);
+  transform: translateX(-4px);
+  transition:
+    opacity var(--duration) var(--ease),
+    transform var(--duration) var(--ease);
 }
 
 a.row:focus-visible .row-go {
   opacity: 1;
+  transform: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
   a.row:hover .row-go {
     opacity: 1;
+    transform: none;
   }
 }
 
@@ -105,6 +136,15 @@ a.row:focus-visible .row-go {
   .asset:hover .asset-preview--light {
     border-color: var(--control-border);
   }
+}
+
+/* Lazy images fade in when they arrive instead of popping (see Base.astro). */
+img[loading="lazy"] {
+  transition: opacity var(--duration-deliberate) var(--ease);
+}
+
+img.is-loading {
+  opacity: 0;
 }
 
 /* ── Copy confirms ── */
@@ -133,10 +173,10 @@ a.row:focus-visible .row-go {
 
 .mobile-menu {
   transition:
-    opacity var(--duration) var(--ease),
-    transform var(--duration) var(--ease),
-    overlay var(--duration) allow-discrete,
-    display var(--duration) allow-discrete;
+    opacity var(--duration-confirm) var(--ease),
+    transform var(--duration-confirm) var(--ease),
+    overlay var(--duration-confirm) allow-discrete,
+    display var(--duration-confirm) allow-discrete;
 }
 
 .mobile-menu:not([open]) {
@@ -147,9 +187,9 @@ a.row:focus-visible .row-go {
 .mobile-menu::backdrop {
   opacity: 0;
   transition:
-    opacity var(--duration) var(--ease),
-    overlay var(--duration) allow-discrete,
-    display var(--duration) allow-discrete;
+    opacity var(--duration-confirm) var(--ease),
+    overlay var(--duration-confirm) allow-discrete,
+    display var(--duration-confirm) allow-discrete;
 }
 
 .mobile-menu[open]::backdrop {
@@ -180,7 +220,7 @@ a.row:focus-visible .row-go {
   ::view-transition-group(*),
   ::view-transition-old(*),
   ::view-transition-new(*) {
-    animation: none;
+    animation: none !important;
   }
 
   .app-top .rs-crumbs-item:last-child,
@@ -192,13 +232,19 @@ a.row:focus-visible .row-go {
   .pager strong,
   .row-go,
   .asset-preview,
+  img[loading="lazy"],
   .copy-icon > *,
   .mobile-menu,
   .mobile-menu::backdrop {
     transition: none;
   }
 
+  .row-go,
   .mobile-menu:not([open]) {
     transform: none;
+  }
+
+  img.is-loading {
+    opacity: 1;
   }
 }
