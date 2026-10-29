@@ -30,6 +30,13 @@ export async function getClientGuides(client: Client): Promise<Guide[]> {
 export const formatDate = (date: Date) =>
   date.toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
+/** An anchor id from a heading: "Logo animation" → "logo-animation". */
+export const slug = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
 /** Two-digit guide numbers: 01, 02, … */
 export const pad = (n: number) => String(n).padStart(2, "0");
 

@@ -1,8 +1,9 @@
 ---
-import { Breadcrumbs, Sidebar, SidebarFoot, SidebarItem, SidebarLabel, SidebarNav } from "@noorddev/vlak-react";
+import { Breadcrumbs, Icon, Sidebar, SidebarFoot, SidebarItem, SidebarLabel, SidebarNav } from "@noorddev/vlak-react";
 import { ThemeToggle } from "@noorddev/vlak-react/components/theme-toggle";
 import Base from "./Base.astro";
 import MobileNav from "../components/MobileNav";
+import Search from "../components/Search";
 import { clientNav } from "../components/ClientNav";
 import { clientUrl, type Client } from "../lib/content";
 import { themeCss, themePaper } from "../lib/theme";
@@ -70,6 +71,13 @@ const theme = client.data.theme;
   <div class="shell">
     <!-- The rail stays mounted from page to page: its scroll, hover, and focus carry over. -->
     <div class="shell-rail" transition:persist={`rail-${client.id}`}>
+      <div class="rail-search">
+        <button class="search-trigger" type="button" data-search-open aria-haspopup="dialog">
+          <Icon name="search" size={16} aria-hidden="true" />
+          <span>Search</span>
+          <kbd data-search-key aria-hidden="true">⌘K</kbd>
+        </button>
+      </div>
       <Sidebar>
         <SidebarNav aria-label="Client space">
           {
@@ -97,6 +105,13 @@ const theme = client.data.theme;
       <slot />
     </main>
   </div>
+
+  <Search
+    client:idle
+    transition:persist={`search-${client.id}`}
+    index={`${home}search.json`}
+    clientName={client.data.name}
+  />
 
   <script is:inline>
     // On a full load, bring the current item into the rail's view before first paint.

@@ -139,16 +139,158 @@ a.rs-btn-ghost {
   top: var(--top-h);
   bottom: 0;
   inset-inline-start: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   width: 204px;
+  border-inline-end: 1px solid var(--divider);
+  background-color: var(--bg);
   z-index: var(--z-sticky);
 }
 
+/* The list scrolls; search above it stays put. */
 .shell-rail > .rs-sidebar {
-  height: 100%;
-  border-block-width: 0;
-  border-inline-start-width: 0;
+  flex: 1;
+  min-height: 0;
+  border-width: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
+}
+
+/* ── Search ──
+   A quiet field at the top of the rail; ⌘K, Ctrl K, or / open it anywhere. */
+
+.rail-search {
+  padding: 12px 12px 4px;
+}
+
+.search-trigger {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 32px;
+  padding-inline: 8px 6px;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--control-fill);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 0.8125rem;
+  text-align: start;
+  cursor: pointer;
+}
+
+.search-trigger > span {
+  flex: 1;
+}
+
+.search-trigger kbd,
+.search-dialog kbd {
+  padding: 1px 4px;
+  border: 1px solid var(--divider);
+  border-radius: 3px;
+  font: inherit;
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.search-trigger:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 1px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .search-trigger:hover {
+    border-color: color-mix(in srgb, var(--text) 24%, transparent);
+    color: var(--text);
+  }
+}
+
+.search-dialog {
+  box-sizing: border-box;
+  width: 560px;
+  max-width: calc(100vw - 32px);
+  margin-block: min(12vh, 120px) auto;
+  padding: 0;
+  overflow: hidden;
+}
+
+.search-dialog .rs-command-input {
+  height: 52px;
+  padding-inline: 16px;
+  border-width: 0 0 1px;
+  font-size: 1rem;
+}
+
+/* The caret marks focus in the only field there is. */
+.search-dialog .rs-command-input:focus-visible {
+  outline: none;
+}
+
+.search-dialog .rs-command-list {
+  max-height: min(26rem, calc(100dvh - 240px));
+  overscroll-behavior: contain;
+}
+
+.search-foot {
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding: 10px 16px;
+  border-top: 1px solid var(--divider);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+@media (hover: none) {
+  .search-foot {
+    display: none;
+  }
+}
+
+/* Two lines of context under each result, with the matched words marked. */
+.search-dialog .rs-command-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+}
+
+.search-dialog mark {
+  background-color: color-mix(in srgb, var(--text) 10%, transparent);
+  color: inherit;
+  border-radius: 2px;
+}
+
+.search-dialog .rs-command-hint {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.search-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.search-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 12%, transparent);
+}
+
+@media (max-width: 1023px) {
+  .search-dialog {
+    margin-block-start: calc(12px + env(safe-area-inset-top));
+  }
+  .search-dialog .rs-command-list {
+    max-height: calc(100dvh - 120px);
+  }
 }
 
 .shell-rail .rs-sidebar-foot {
@@ -217,6 +359,10 @@ a.rs-btn-ghost {
 .mobile-bar-here::before {
   content: "/";
   margin-inline-end: 12px;
+}
+
+.mobile-bar-actions {
+  display: flex;
 }
 
 .mobile-bar .rs-btn-ghost {

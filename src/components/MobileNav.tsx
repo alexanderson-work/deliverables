@@ -17,7 +17,7 @@ interface Props {
   logo?: { light: string; dark: string };
 }
 
-/** Phone and tablet chrome: name, current page, and one menu button. */
+/** Phone and tablet chrome: name, current page, search, and the menu. */
 export default function MobileNav({ clientName, home, here, current, groups, studio, logo }: Props) {
   const [open, setOpen] = useState(false);
 
@@ -34,16 +34,22 @@ export default function MobileNav({ clientName, home, here, current, groups, stu
         )}
       </a>
       <span className="mobile-bar-here">{here}</span>
-      <Button
-        variant="ghost"
-        size="icon"
-        aria-label="Open menu"
-        aria-haspopup="dialog"
-        aria-expanded={open}
-        onClick={() => setOpen(true)}
-      >
-        <Icon name="menu" size={24} aria-hidden="true" />
-      </Button>
+      <div className="mobile-bar-actions">
+        {/* Search.tsx opens on any [data-search-open]. */}
+        <Button variant="ghost" size="icon" aria-label="Search" aria-haspopup="dialog" data-search-open>
+          <Icon name="search" size={24} aria-hidden="true" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Open menu"
+          aria-haspopup="dialog"
+          aria-expanded={open}
+          onClick={() => setOpen(true)}
+        >
+          <Icon name="menu" size={24} aria-hidden="true" />
+        </Button>
+      </div>
       <Sheet
         className="mobile-menu"
         side="left"
