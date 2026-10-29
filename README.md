@@ -103,7 +103,9 @@ Motion lives in `src/styles/motion.css`. Fades use Vlak's curve (`--ease`) and d
 
 Pages change in place with Astro's `<ClientRouter />` (in `Base.astro`), and pages load ahead when a link is hovered. The sidebar and the theme toggle are marked `transition:persist`, so they stay mounted from page to page and keep their scroll, hover, and focus; `ClientShell.astro` moves the current-page state when the page changes. Because a script now runs once per visit rather than once per page, anything that sets up a page goes through `everyPage()` from `src/lib/page.ts`, which runs it now and again after each swap, with a signal for cleaning up.
 
-The header, sidebar, and "On this page" outline are `position: fixed`, not sticky: Safari repositions sticky elements a frame behind the scroll, which made them shake. Vlak's fixed grid-line overlay is turned off in `site.css`, since its lines shimmered behind scrolling rules.
+The header, sidebar, and "On this page" outline are `position: fixed`, not sticky: Safari repositions sticky elements a frame behind the scroll, which made them shake.
+
+Vlak's module grid shows as faint hairline pairs at every 204px module edge, and the layout sits on it: the content column runs between lines, and boxes (callouts, code, the showcase) are sized so their edges land on them. Vlak draws the grid as a fixed overlay, which shimmered against scrolling rules in Safari, so `site.css` turns that off and paints the same lines (Vlak's `--grid-image` tokens) as the page's own background and the header bar's. The sidebar stays clean.
 
 External links open in a new tab. Templates use `newTab()` from `src/lib/links.ts`, Markdown links in guides go through `ProseLink.astro`, and raw `<a>` tags in MDX need `target="_blank" rel="noopener noreferrer"` written out.
 

@@ -22,10 +22,22 @@ body {
   margin: 0;
 }
 
-/* Vlak's fixed grid-line overlay is off: its lines sat behind every scrolling
-   rule and read as shimmer while scrolling. The module grid still sets the layout. */
+/* Vlak's module grid: a pair of hairlines at every 204px module edge, 20px
+   apart, which the content column and outline already sit on. Vlak draws it as
+   a fixed overlay; here it's the page's own background instead, painted under
+   the content and scrolling with it, because the fixed layer shimmered against
+   scrolling rules in Safari. The rail stays clean; the header bar over the page
+   carries the same lines so they run unbroken to the top. */
 html::before {
   display: none;
+}
+
+body,
+.app-top-bar {
+  background-image: var(--grid-image);
+  background-size: var(--grid-size) 100%;
+  background-position: var(--grid-pos);
+  background-repeat: repeat;
 }
 
 /* Headings take the heading family; studio pages use one family for both. */
@@ -1131,6 +1143,12 @@ a.row:focus-visible {
   color: var(--text-secondary);
 }
 
+/* Boxes include their padding, so their edges land on the module grid's lines. */
+.prose .rs-callout,
+.prose pre {
+  box-sizing: border-box;
+}
+
 .prose .rs-callout {
   margin-block: 32px;
 }
@@ -1537,6 +1555,7 @@ a.row:focus-visible {
 /* ── AI tools ── */
 
 .ai-link {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   gap: 12px;
