@@ -21,6 +21,10 @@ const { title, description } = Astro.props;
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- Satoshi, served by Fontshare (ITF Free Font License). The font files stay out of this repo. -->
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@1,2&display=swap" />
     <script is:inline>
       // Apply the stored scheme before paint so there is no flash.
       try {

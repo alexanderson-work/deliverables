@@ -10,3 +10,29 @@
    }
    :root[data-theme="dark"] { … }
 */
+
+/* Type: Satoshi in place of Vlak's Inter. Loaded in Base.astro.
+   Every Vlak component the site uses inherits the body family.
+   Satoshi's 500 and 600 sit close together, so headings, labels, and bold
+   step up to 700 against the 500 body to keep Vlak's hierarchy legible. */
+:root {
+  --font-sans: Satoshi, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --weight-strong: 700;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+.rs-t-xl,
+.rs-t-display,
+.rs-t-title,
+.rs-t-label,
+.rs-sidebar-head,
+.rs-sidebar-label,
+.rs-sheet-title,
+.rs-btn-primary,
+strong,
+b {
+  font-weight: var(--weight-strong);
+}

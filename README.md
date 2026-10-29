@@ -53,6 +53,8 @@ A guide that applies to several clients can live in `src/content/guides/shared/`
 
 Vlak's tokens are CSS custom properties. Override them in `src/styles/brand.css` to move the site toward the Alex Anderson design system; it loads after Vlak and wins without `!important`. Layout and page styles are in `src/styles/site.css`.
 
+Type is [Satoshi](https://www.fontshare.com/fonts/satoshi), loaded from Fontshare's CDN in `src/layouts/Base.astro`. The font files aren't committed: Satoshi's license (ITF Free Font License) allows self-hosting on your own site but not redistributing the files through a public repository. If this repo goes private, the files can move into the project and be served with `@font-face` instead. Headings, labels, and bold use `--weight-strong` (700 for Satoshi).
+
 ## Deploy
 
 The repo is set up for Vercel (`vercel.json`): static output, trailing slashes, and an `X-Robots-Tag: noindex` header. Point a subdomain such as `clients.alexanderson.work` at the project and update `site` in `astro.config.mjs`.
