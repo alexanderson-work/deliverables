@@ -6,6 +6,7 @@ import MobileNav from "../components/MobileNav";
 import { clientNav } from "../components/ClientNav";
 import { clientUrl, type Client } from "../lib/content";
 import { themeCss, themePaper } from "../lib/theme";
+import { newTab } from "../lib/links";
 import { siteTitle, studio } from "../site.config";
 
 interface Props {
@@ -85,7 +86,7 @@ const theme = client.data.theme;
         </SidebarNav>
         <SidebarFoot>
           <span>Prepared by</span>
-          <a href={studio.url} style="color: var(--text); text-decoration: none">{studio.name}</a>
+          <a href={studio.url} {...newTab(studio.url)} style="color: var(--text); text-decoration: none">{studio.name}</a>
         </SidebarFoot>
       </Sidebar>
     </div>

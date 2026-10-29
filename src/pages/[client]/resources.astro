@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import { Icon } from "@noorddev/vlak-react";
 import ClientShell from "../../layouts/ClientShell.astro";
 import type { Client } from "../../lib/content";
+import { isExternal, newTab } from "../../lib/links";
 
 export async function getStaticPaths() {
   const clients = await getCollection("clients");
@@ -12,7 +13,6 @@ export async function getStaticPaths() {
 }
 
 const { client } = Astro.props as { client: Client };
-const isExternal = (href: string) => /^https?:\/\//.test(href);
 ---
 
 <ClientShell client={client} title="Resources" trail={[{ label: "Resources" }]}>
@@ -30,7 +30,7 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
         <ul class="rows">
           {group.items.map((item) => (
             <li>
-              <a class="row row--plain" href={item.href}>
+              <a class="row row--plain" href={item.href} {...newTab(item.href)}>
                 <span>
                   <span class="row-title">{item.title}</span>
                   {item.description && <span class="row-desc">{item.description}</span>}

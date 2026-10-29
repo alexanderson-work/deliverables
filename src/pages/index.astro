@@ -2,6 +2,7 @@
 import { ThemeToggle } from "@noorddev/vlak-react/components/theme-toggle";
 import Base from "../layouts/Base.astro";
 import { siteTitle, studio } from "../site.config";
+import { newTab } from "../lib/links";
 
 const year = new Date().getFullYear();
 ---
@@ -19,12 +20,12 @@ const year = new Date().getFullYear();
         links they need. Open the link from your project email to find yours.
       </p>
       <div class="page-actions">
-        <a class="rs-btn-ghost" href={studio.url}>Visit alexanderson.work</a>
+        <a class="rs-btn-ghost" href={studio.url} {...newTab(studio.url)}>Visit alexanderson.work</a>
       </div>
     </div>
     <div class="home-foot">
       <span>© {year} {studio.name}</span>
-      <a href={studio.url}>alexanderson.work</a>
+      <a href={studio.url} {...newTab(studio.url)}>alexanderson.work</a>
     </div>
   </main>
 </Base>

@@ -6,6 +6,7 @@ import Contact from "../../../components/Contact.astro";
 import Figure from "../../../components/Figure.astro";
 import GuideVideo from "../../../components/GuideVideo.astro";
 import InlineCode from "../../../components/InlineCode.astro";
+import ProseLink from "../../../components/ProseLink.astro";
 import Toc from "../../../components/Toc.astro";
 import { formatDate, getClientGuides, guideSlug, guideUrl, pad, type Client, type Guide } from "../../../lib/content";
 
@@ -58,7 +59,7 @@ const { Content, headings } = await render(guide);
       {video && <GuideVideo title={title} src={video.src} poster={video.poster} captions={video.captions} />}
 
       <div class="prose">
-        <Content components={{ Callout, Kbd, Figure, code: InlineCode }} />
+        <Content components={{ Callout, Kbd, Figure, code: InlineCode, a: ProseLink }} />
       </div>
 
       {

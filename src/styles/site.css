@@ -7,6 +7,7 @@
 :root {
   --weight-strong: 600;
   --top-h: 64px;
+  --mobile-h: 60px;
   --measure: 592px;
   --wide: 796px;
 }
@@ -46,9 +47,12 @@ a.rs-btn-ghost {
 
 /* The header spans the full width: the client name sits over the rail,
    the trail and theme toggle over the page. */
+/* The header, rail, and outline are position: fixed rather than sticky. Safari
+   repositions sticky elements a frame behind the scroll, which made the chrome
+   shake by a few pixels; fixed elements are pinned by the compositor. */
 .app-top {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  inset: 0 0 auto;
   z-index: var(--z-sticky);
   box-sizing: border-box;
   display: grid;
@@ -123,15 +127,18 @@ a.rs-btn-ghost {
 }
 
 .shell {
-  display: grid;
-  grid-template-columns: 204px minmax(0, 1fr);
-  min-height: calc(100dvh - var(--top-h));
+  min-height: 100dvh;
+  box-sizing: border-box;
+  padding-top: var(--top-h);
+  padding-inline-start: 204px;
 }
 
 .shell-rail {
-  position: sticky;
+  position: fixed;
   top: var(--top-h);
-  height: calc(100dvh - var(--top-h));
+  bottom: 0;
+  inset-inline-start: 0;
+  width: 204px;
   z-index: var(--z-sticky);
 }
 
@@ -159,7 +166,8 @@ a.rs-btn-ghost {
 
 @media (max-width: 1023px) {
   .shell {
-    grid-template-columns: minmax(0, 1fr);
+    padding-top: calc(var(--mobile-h) + env(safe-area-inset-top));
+    padding-inline-start: 0;
   }
   .app-top,
   .shell-rail {
@@ -167,8 +175,8 @@ a.rs-btn-ghost {
   }
   .mobile-top {
     display: block;
-    position: sticky;
-    top: 0;
+    position: fixed;
+    inset: 0 0 auto;
     z-index: var(--z-sticky);
   }
 }
@@ -176,11 +184,12 @@ a.rs-btn-ghost {
 /* ── Mobile bar (rendered by MobileNav) ── */
 
 .mobile-bar {
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
-  min-height: 60px;
+  height: calc(var(--mobile-h) + env(safe-area-inset-top));
   padding-inline: var(--pad) calc(var(--pad) - 10px);
   padding-top: env(safe-area-inset-top);
   background-color: var(--bg);
@@ -593,12 +602,15 @@ a.row:focus-visible {
   display: none;
 }
 
+/* The outline sits in the sixth module: rail, page padding, four modules of
+   content, one gutter. Its grid column stays reserved in .doc. */
 @media (min-width: 1244px) {
   .toc {
     display: block;
-    position: sticky;
+    position: fixed;
     top: calc(var(--top-h) + 52px);
-    align-self: start;
+    inset-inline-start: calc(204px + var(--pad) + var(--wide) + 20px);
+    width: 184px;
     max-height: calc(100dvh - var(--top-h) - 104px);
     overflow-y: auto;
   }

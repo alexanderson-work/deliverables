@@ -9,6 +9,7 @@ theme:
     stylesheet: /clients/justifi/fonts/fonts.css
     preload:
       - /clients/justifi/fonts/lato-latin-400-normal.woff2
+      - /clients/justifi/fonts/lato-latin-700-normal.woff2
       - /clients/justifi/fonts/mulish-latin-wght-normal.woff2
   light:
     paper: "#FFFFFF"

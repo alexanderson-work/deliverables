@@ -27,8 +27,9 @@
 }
 
 /* ── Page to page ──
-   The header and rail hold still. The old page lets go quickly and the new one
-   settles into place, so the eye stays on the content. */
+   The header and rail hold still. The old page clears first and the new one
+   settles in after it, never on top of it: overlapping two different pages
+   reads as a double exposure. 0.15s out, a 0.1s beat, 0.3s in. */
 
 @view-transition {
   navigation: auto;
@@ -47,11 +48,11 @@
 }
 
 ::view-transition-old(root) {
-  animation: motion-fade-out var(--duration) var(--ease) both;
+  animation: motion-fade-out calc(var(--duration) * 0.75) var(--ease) both;
 }
 
 ::view-transition-new(root) {
-  animation: motion-settle var(--duration-deliberate) var(--ease) both;
+  animation: motion-settle var(--duration-confirm) var(--ease) var(--duration-snap) both;
 }
 
 html:not(.theme-switching)::view-transition-group(app-top),

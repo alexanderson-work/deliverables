@@ -66,7 +66,7 @@ export default function MobileNav({ clientName, home, here, current, groups, stu
           ))}
         </nav>
         <div className="mobile-menu-foot">
-          <a href={studio.url} style={{ color: "inherit" }}>
+          <a href={studio.url} target="_blank" rel="noopener noreferrer" style={{ color: "inherit" }}>
             {studio.name}
           </a>
           <ThemeToggle className="rs-theme-toggle-inline" />

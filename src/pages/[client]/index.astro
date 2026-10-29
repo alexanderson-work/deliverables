@@ -5,6 +5,7 @@ import ClientShell from "../../layouts/ClientShell.astro";
 import GuideRows from "../../components/GuideRows.astro";
 import Contact from "../../components/Contact.astro";
 import { bySection, clientUrl, getClientGuides, guideUrl, type Client } from "../../lib/content";
+import { newTab } from "../../lib/links";
 
 export async function getStaticPaths() {
   const clients = await getCollection("clients");
@@ -128,7 +129,7 @@ const brandNote = brand
         <ul class="rows">
           {links.slice(0, 4).map((item) => (
             <li>
-              <a class="row row--plain" href={item.href}>
+              <a class="row row--plain" href={item.href} {...newTab(item.href)}>
                 <span>
                   <span class="row-title">{item.title}</span>
                   {item.description && <span class="row-desc">{item.description}</span>}
@@ -154,7 +155,7 @@ const brandNote = brand
               <dt>{fact.label}</dt>
               <dd>
                 {fact.href ? (
-                  <a class="rs-link" href={fact.href}>
+                  <a class="rs-link" href={fact.href} {...newTab(fact.href)}>
                     {fact.value}
                   </a>
                 ) : (

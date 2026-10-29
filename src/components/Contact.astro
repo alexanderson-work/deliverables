@@ -1,5 +1,6 @@
 ---
 import { studio } from "../site.config";
+import { newTab } from "../lib/links";
 ---
 
 <section class="contact" aria-labelledby="questions">
@@ -7,7 +8,7 @@ import { studio } from "../site.config";
   <p>
     If anything comes up as you put this work to use, email{" "}
     <a class="rs-link" href={`mailto:${studio.email}`}>{studio.email}</a>{" "}
-    or <a class="rs-link" href={studio.calendar}>grab a time on the calendar</a>.
+    or <a class="rs-link" href={studio.calendar} {...newTab(studio.calendar)}>grab a time on the calendar</a>.
   </p>
   <p class="contact-sign">{studio.name}</p>
 </section>

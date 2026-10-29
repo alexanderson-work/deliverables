@@ -1,0 +1,8 @@
+---
+// Links in guide bodies: external ones open in a new tab.
+import { newTab } from "../lib/links";
+
+const { href, ...rest } = Astro.props;
+---
+
+<a href={href} {...rest} {...newTab(href)}><slot /></a>
