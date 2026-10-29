@@ -105,7 +105,7 @@ Pages change in place with Astro's `<ClientRouter />` (in `Base.astro`), and pag
 
 The header, sidebar, and "On this page" outline are `position: fixed`, not sticky: Safari repositions sticky elements a frame behind the scroll, which made them shake.
 
-Vlak's module grid shows as faint hairline pairs at every 204px module edge, and the layout sits on it: the content column runs between lines, and boxes (callouts, code, the showcase) are sized so their edges land on them. Vlak draws the grid as a fixed overlay, which shimmered against scrolling rules in Safari, so `site.css` turns that off and paints the same lines (Vlak's `--grid-image` tokens) as the page's own background and the header bar's. The sidebar stays clean.
+Lines follow vlak.dev's homepage rather than Vlak's background grid (whose overlay is turned off in `site.css`): a few structural rules that divide the layout into cells. A rule closes each page's title band; on wide screens a full-height split marks where the outline column begins (the "On this page" marker runs along it), and the title rule meets it; project facts sit in a row of divided cells.
 
 External links open in a new tab. Templates use `newTab()` from `src/lib/links.ts`, Markdown links in guides go through `ProseLink.astro`, and raw `<a>` tags in MDX need `target="_blank" rel="noopener noreferrer"` written out.
 

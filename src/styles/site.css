@@ -22,22 +22,11 @@ body {
   margin: 0;
 }
 
-/* Vlak's module grid: a pair of hairlines at every 204px module edge, 20px
-   apart, which the content column and outline already sit on. Vlak draws it as
-   a fixed overlay; here it's the page's own background instead, painted under
-   the content and scrolling with it, because the fixed layer shimmered against
-   scrolling rules in Safari. The rail stays clean; the header bar over the page
-   carries the same lines so they run unbroken to the top. */
+/* Vlak's background grid overlay is off. The layout draws a few structural
+   lines instead, the way vlak.dev's homepage does: a rule under each page's
+   title band, and a split between the page and its outline column. */
 html::before {
   display: none;
-}
-
-body,
-.app-top-bar {
-  background-image: var(--grid-image);
-  background-size: var(--grid-size) 100%;
-  background-position: var(--grid-pos);
-  background-repeat: repeat;
 }
 
 /* Headings take the heading family; studio pages use one family for both. */
@@ -517,10 +506,31 @@ a.rs-btn-ghost {
 
 .page {
   padding: 52px var(--pad) 84px;
+  /* The title band's rule reaches past the padding; clip it at the page's edge. */
+  overflow-x: clip;
 }
 
+/* The title band: closed by a rule from the rail to the outline split, or to
+   the window's edge when there's no outline column. */
 .page-head {
+  position: relative;
   max-width: var(--wide);
+  padding-bottom: 52px;
+}
+
+.page-head::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  inset-inline-start: calc(-1 * var(--pad));
+  width: 100vw;
+  height: 1px;
+  background-color: var(--divider);
+}
+
+.page-head + .section,
+.page-head + .video {
+  margin-top: 52px;
 }
 
 .page-head > * + * {
@@ -795,16 +805,25 @@ a.row:focus-visible {
 
 /* ── Facts ── */
 
+/* Facts sit in a row of cells, divided like the cards on vlak.dev. */
 .facts {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px;
   margin: 0;
-  padding-top: 16px;
+  border-bottom: 1px solid var(--divider);
 }
 
 .facts div {
   min-width: 0;
+  padding: 20px 20px 24px;
+}
+
+.facts div:first-child {
+  padding-inline-start: 0;
+}
+
+.facts div + div {
+  border-inline-start: 1px solid var(--divider);
 }
 
 .facts dt {
@@ -822,6 +841,13 @@ a.row:focus-visible {
 @media (max-width: 760px) {
   .facts {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .facts div:nth-child(odd) {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+  .facts div:nth-child(n + 3) {
+    border-top: 1px solid var(--divider);
   }
 }
 
@@ -881,6 +907,25 @@ a.row:focus-visible {
 
 /* The outline sits in the sixth module: rail, page padding, four modules of
    content, one gutter. Its grid column stays reserved in .doc. */
+/* The outline split: a full-height line where the outline column begins, like
+   the split in vlak.dev's hero. It's there on every page, so the title band's
+   rule always meets it. */
+@media (min-width: 1244px) {
+  .shell::after {
+    content: "";
+    position: fixed;
+    top: var(--top-h);
+    bottom: 0;
+    inset-inline-start: calc(204px + var(--pad) + var(--wide) + 20px);
+    width: 1px;
+    background-color: var(--divider);
+    pointer-events: none;
+  }
+  .page-head::after {
+    width: calc(var(--pad) + var(--wide) + 20px);
+  }
+}
+
 @media (min-width: 1244px) {
   .toc {
     display: block;
@@ -895,14 +940,17 @@ a.row:focus-visible {
 
 .toc p {
   margin: 0 0 8px;
+  padding-inline-start: 12px;
   font-size: 0.75rem;
   font-weight: var(--weight-strong);
   color: var(--text-secondary);
 }
 
+/* The track is the outline split itself (below); its own edge stays clear so
+   the two don't stack into a darker line. */
 .toc-track {
   position: relative;
-  border-inline-start: 1px solid var(--divider);
+  border-inline-start: 1px solid transparent;
 }
 
 .toc ol {
@@ -1143,7 +1191,7 @@ a.row:focus-visible {
   color: var(--text-secondary);
 }
 
-/* Boxes include their padding, so their edges land on the module grid's lines. */
+/* Boxes include their padding, so their edges line up with the text column's. */
 .prose .rs-callout,
 .prose pre {
   box-sizing: border-box;
