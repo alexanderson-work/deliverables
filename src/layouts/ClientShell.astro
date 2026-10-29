@@ -6,6 +6,7 @@ import MobileNav from "../components/MobileNav";
 import Search from "../components/Search";
 import { clientNav } from "../components/ClientNav";
 import { clientUrl, type Client } from "../lib/content";
+import { agentFiles } from "../lib/agents";
 import { themeCss, themePaper } from "../lib/theme";
 import { contactHref, siteTitle, studio } from "../site.config";
 
@@ -16,9 +17,12 @@ interface Props {
   description?: string;
   /** Breadcrumb trail; the client name sits at the left of the header. */
   trail?: { label: string; href?: string }[];
+  /** This page as Markdown, for AI tools (a guide's .md, the brand's brand.md). */
+  markdown?: string;
 }
 
-const { client, title, description, trail = [{ label: "Overview" }] } = Astro.props;
+const { client, title, description, trail = [{ label: "Overview" }], markdown } = Astro.props;
+const agents = agentFiles(client, Astro.site!);
 const home = clientUrl(client);
 const current = Astro.url.pathname;
 const groups = await clientNav(client);
@@ -36,6 +40,10 @@ const contact = { name: studio.name, photo: studio.photo, href: contactHref(clie
   themeCss={themeCss(theme)}
   paper={themePaper(theme)}
 >
+  <Fragment slot="head">
+    <link rel="alternate" type="text/plain" href={agents.llms} title={`Instructions for AI tools: ${client.data.name}`} />
+    {markdown && <link rel="alternate" type="text/markdown" href={markdown} />}
+  </Fragment>
   <!-- One full-width header, so browsers that tint their toolbar from a pinned header (Safari 26) find it. -->
   <header class="app-top">
     <a class="app-top-name" href={home}>
@@ -109,6 +117,7 @@ const contact = { name: studio.name, photo: studio.photo, href: contactHref(clie
       <slot />
     </main>
   </div>
+  <p class="sr-live" aria-live="polite" id="copy-status"></p>
 
   <Search
     client:idle
@@ -186,6 +195,26 @@ const contact = { name: studio.name, photo: studio.photo, href: contactHref(clie
         reveal(rail, current, persisted && !still.matches ? "smooth" : "instant");
       } else {
         marker.remove();
+      }
+    });
+
+    // Copy buttons ([data-copy]) put their value on the clipboard and confirm with a check.
+    everyPage(() => {
+      const status = document.getElementById("copy-status");
+      for (const button of document.querySelectorAll<HTMLButtonElement>("button[data-copy]")) {
+        let timer: number | undefined;
+        button.addEventListener("click", async () => {
+          const value = button.dataset.copy!;
+          try {
+            await navigator.clipboard.writeText(value);
+            if (status) status.textContent = `Copied ${button.dataset.copyLabel ?? value}`;
+            button.classList.add("is-copied");
+            clearTimeout(timer);
+            timer = window.setTimeout(() => button.classList.remove("is-copied"), 1200);
+          } catch {
+            if (status) status.textContent = "Copy failed. Select the text and copy it manually.";
+          }
+        });
       }
     });
 

@@ -5,6 +5,26 @@
     {
       "source": "/(.*)",
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/(.*)\\.md",
+      "headers": [{ "key": "Content-Type", "value": "text/markdown; charset=utf-8" }]
+    },
+    {
+      "source": "/(.*)\\.txt",
+      "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }]
+    },
+    {
+      "source": "/:client/(llms\\.txt|llms-full\\.txt|brand\\.md|brand\\.json)",
+      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
+    },
+    {
+      "source": "/:client/guides/(.*)\\.md",
+      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
+    },
+    {
+      "source": "/clients/(.*)",
+      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
     }
   ]
 }

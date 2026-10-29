@@ -1534,6 +1534,33 @@ a.row:focus-visible {
   color: inherit;
 }
 
+/* ── AI tools ── */
+
+.ai-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: var(--measure);
+  margin-top: 20px;
+  padding: 6px 6px 6px 16px;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-sm);
+}
+
+.ai-link code {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.875rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ai-link + .page-actions {
+  align-items: center;
+  margin-top: 16px;
+}
+
 .sr-live {
   position: absolute;
   width: 1px;

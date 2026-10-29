@@ -1,2 +1,11 @@
+# Client spaces are unlisted: no search engines, and no crawling for AI training.
 User-agent: *
 Disallow: /
+
+# AI tools reading a link a person gave them are welcome, so a client can hand
+# an assistant the address of their space and it can use the brand (see /<client>/llms.txt).
+User-agent: Claude-User
+User-agent: ChatGPT-User
+User-agent: Perplexity-User
+User-agent: MistralAI-User
+Allow: /

@@ -196,6 +196,14 @@ brand:
       cmyk: 0 46 60 0
       usage: Accent. The JustGrow product color.
   colorNote: Use the primary navy as a base, amber for branding and calls to action, and accent colors sparingly when they add value.
+  # From the brand guidelines, written for AI tools (llms.txt, brand.md).
+  rules:
+    - Use the primary logo in primary brand settings and wherever people meet JustiFi for the first time. Use the word mark in legal, internal, or other places where the name matters more than the full logo. Use the brand icon alone in small spaces where the brand needs to be identified but not explained, such as avatars and favicons.
+    - The word mark is a modified Mulish Black with rounded dots on the i’s. Never set the name “JustiFi” in a font as a stand-in for the logo; use the files.
+    - The brand icon is the therefore symbol, ∴, turned to face right. Never rotate it into the apex-up position; that configuration is already owned by Asana’s logo.
+    - Navy (#0D1A27) is the base for backgrounds, text, and the logo. Brand Amber (#FFA000) is for branding and calls to action. The four product colors are accents; use them sparingly and only where they add value, and use each one for its own product (JustCloak, JustPay, JustMove, JustGrow).
+    - Set headings and statement copy in Mulish Bold, and anything longer than a sentence, plus standard interface text, in Lato Regular.
+    - The overall feel is mature and straightforward, the calm authority of infrastructure you build on. Deep navy, restrained amber, clean geometric type; avoid gradients, playful effects, and extra colors.
   type:
     - name: Mulish Bold
       role: Headlines
@@ -205,6 +213,11 @@ brand:
       role: Body
       description: Anywhere there’s more than a full sentence of copy, and in standard UI elements.
       href: https://fonts.google.com/specimen/Lato
+
+# Notes for AI tools working on JustiFi's projects (llms.txt).
+agents:
+  - The website is built in Framer. Before changing it, read the Using AI in Framer guide, then Colors & Text Styles and The Layout Template. Use the site’s shared color and text styles; never type a raw color or font size.
+  - Work on a branch for anything larger than a text change, preview before publishing, and leave publishing to a person.
 
 resources:
   - group: Brand files

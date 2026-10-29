@@ -9,6 +9,7 @@ import InlineCode from "../../../components/InlineCode.astro";
 import ProseLink from "../../../components/ProseLink.astro";
 import Toc from "../../../components/Toc.astro";
 import { formatDate, getClientGuides, guideSlug, guideUrl, type Client, type Guide } from "../../../lib/content";
+import { agentFiles } from "../../../lib/agents";
 
 export async function getStaticPaths() {
   const clients = await getCollection("clients");
@@ -41,6 +42,7 @@ const { Content, headings } = await render(guide);
   title={title}
   description={summary}
   trail={[{ label: guide.data.section }, { label: title }]}
+  markdown={agentFiles(client, Astro.site!).guide(guide)}
 >
   <div class="doc">
     <article class="doc-main">

@@ -281,11 +281,11 @@ img.is-loading {
 }
 
 .copy-icon > :last-child,
-.copy.is-copied .copy-icon > :first-child {
+[data-copy].is-copied .copy-icon > :first-child {
   opacity: 0;
 }
 
-.copy.is-copied .copy-icon > :last-child {
+[data-copy].is-copied .copy-icon > :last-child {
   opacity: 1;
   color: var(--text);
 }

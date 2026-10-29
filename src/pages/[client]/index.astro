@@ -6,6 +6,7 @@ import GuideRows from "../../components/GuideRows.astro";
 import Contact from "../../components/Contact.astro";
 import { bySection, clientUrl, getClientGuides, guideUrl, type Client } from "../../lib/content";
 import { newTab } from "../../lib/links";
+import { agentFiles, starterPrompt } from "../../lib/agents";
 
 export async function getStaticPaths() {
   const clients = await getCollection("clients");
@@ -21,6 +22,7 @@ const featured = guides.find((g) => g.data.video);
 const lead = brand?.assets[0]?.items[0];
 const downloads = brand?.downloads ?? [];
 const links = resources.flatMap((g) => g.items);
+const agents = agentFiles(client, Astro.site!);
 const brandNote = brand
   ? [
       ...brand.assets.map((g, i) => (i === 0 ? g.group : g.group.toLowerCase())),
@@ -153,6 +155,37 @@ const brandNote = brand
       </section>
     )
   }
+
+  <section class="section" aria-labelledby="ai">
+    <div class="section-head">
+      <h2 id="ai">AI tools</h2>
+    </div>
+    <p class="section-note">
+      Give an AI tool this link and it can work with {name}’s brand and website: every logo, color, and typeface with a
+      direct link, the rules for using them, and the website guides. If you’re an AI tool reading this page, start at
+      the link below.
+    </p>
+    <div class="ai-link">
+      <code>{agents.llms}</code>
+      <button class="rs-btn-ghost" type="button" data-copy={agents.llms} data-copy-label="the link for AI tools">
+        <span class="copy-icon" aria-hidden="true">
+          <Icon name="copy" size={16} />
+          <Icon name="copied" size={16} />
+        </span>
+        Copy link
+      </button>
+    </div>
+    <div class="page-actions">
+      <button class="rs-btn-ghost" type="button" data-copy={starterPrompt(client, Astro.site!)} data-copy-label="a starter prompt">
+        <span class="copy-icon" aria-hidden="true">
+          <Icon name="copy" size={16} />
+          <Icon name="copied" size={16} />
+        </span>
+        Copy a starter prompt
+      </button>
+      <a class="rs-link" href={agents.llms} target="_blank" rel="noopener">See what AI tools read</a>
+    </div>
+  </section>
 
   {
     project.length > 0 && (

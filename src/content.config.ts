@@ -57,6 +57,8 @@ const brand = z.object({
       }),
     )
     .default([]),
+  /** Rules for using the brand, written for AI tools (llms.txt, brand.md): what to do and not do. */
+  rules: z.array(z.string()).default([]),
 });
 
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
@@ -101,6 +103,8 @@ const clients = defineCollection({
     theme: theme.optional(),
     brand: brand.optional(),
     resources: z.array(z.object({ group: z.string(), items: z.array(link) })).default([]),
+    /** Notes for AI tools beyond the brand rules, such as how to approach work on the website. */
+    agents: z.array(z.string()).default([]),
   }),
 });
 

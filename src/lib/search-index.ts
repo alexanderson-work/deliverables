@@ -75,6 +75,15 @@ export async function searchRecords(client: Client): Promise<SearchRecord[]> {
     });
   }
 
+  add({
+    kind: "page",
+    group: "Pages",
+    title: "AI tools",
+    text: `Give an AI tool the link to ${name}'s space and it can use the brand and website guides correctly.`,
+    keywords: "ai llms agent assistant chatgpt claude prompt",
+    url: `${base}#ai`,
+  });
+
   // Each guide, then each of its sections, so a result can land on the right heading.
   const guides = await getClientGuides(client);
   for (const guide of guides) {

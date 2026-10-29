@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import { Icon } from "@noorddev/vlak-react";
 import ClientShell from "../../layouts/ClientShell.astro";
 import { slug, type Client } from "../../lib/content";
+import { agentFiles } from "../../lib/agents";
 import { isExternal, newTab } from "../../lib/links";
 
 export async function getStaticPaths() {
@@ -18,9 +19,10 @@ const brand = client.data.brand!;
 const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
 const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(" ");
 const groundStyle = `--ground-light: ${brand.grounds.light}; --ground-dark: ${brand.grounds.dark}`;
+const agents = agentFiles(client, Astro.site!);
 ---
 
-<ClientShell client={client} title="Brand assets" trail={[{ label: "Brand assets" }]}>
+<ClientShell client={client} title="Brand assets" trail={[{ label: "Brand assets" }]} markdown={agents.brandMd}>
   <header class="page-head">
     <h1 class="rs-t-display">Brand assets</h1>
     <p class="rs-t-sub">{brand.intro ?? `The official logo files, colors, and typefaces for ${client.data.name}.`}</p>
@@ -33,6 +35,10 @@ const groundStyle = `--ground-light: ${brand.grounds.light}; --ground-dark: ${br
               {file.label}
             </a>
           ))}
+          <a class="rs-btn-ghost" href={agents.llms} target="_blank" rel="noopener">
+            <Icon name="external" size={16} aria-hidden="true" />
+            For AI tools
+          </a>
         </div>
       )
     }
@@ -133,7 +139,6 @@ const groundStyle = `--ground-light: ${brand.grounds.light}; --ground-dark: ${br
             </div>
           ))}
         </div>
-        <p class="sr-live" aria-live="polite" id="copy-status" />
       </section>
     )
   }
@@ -170,26 +175,8 @@ const groundStyle = `--ground-light: ${brand.grounds.light}; --ground-dark: ${br
 
   const still = window.matchMedia("(prefers-reduced-motion: reduce)");
 
+  // Looping previews play only while on screen, and never under reduced motion.
   everyPage((signal) => {
-    const status = document.getElementById("copy-status");
-    for (const button of document.querySelectorAll<HTMLButtonElement>("button[data-copy]")) {
-      let timer: number | undefined;
-      button.addEventListener("click", async () => {
-        const value = button.dataset.copy!;
-        try {
-          await navigator.clipboard.writeText(value);
-          if (status) status.textContent = `Copied ${value}`;
-          // Confirm: the icon turns to a check for a moment.
-          button.classList.add("is-copied");
-          clearTimeout(timer);
-          timer = window.setTimeout(() => button.classList.remove("is-copied"), 1200);
-        } catch {
-          if (status) status.textContent = "Copy failed. Select the value and copy it manually.";
-        }
-      });
-    }
-
-    // Looping previews play only while on screen, and never under reduced motion.
     const videos = [...document.querySelectorAll<HTMLVideoElement>("video[data-inview-play]")];
     if (!videos.length) return;
     const visible = new Set<HTMLVideoElement>();
