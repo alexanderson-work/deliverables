@@ -229,12 +229,23 @@ a.rs-btn-ghost {
 
 .search-dialog .rs-command-input {
   height: 52px;
-  padding-inline: 16px;
+  padding-inline: 16px 56px;
   border-width: 0 0 1px;
   font-size: 1rem;
 }
 
-/* The caret marks focus in the only field there is. */
+/* Close sits at the end of the field's row. */
+.search-close.rs-btn-ghost {
+  position: absolute;
+  top: 4px;
+  inset-inline-end: 4px;
+  width: var(--hit);
+  padding: 0;
+  border-color: transparent;
+  color: var(--text-secondary);
+}
+
+/* The caret marks focus in the field. */
 .search-dialog .rs-command-input:focus-visible {
   outline: none;
 }
@@ -440,10 +451,11 @@ a.rs-btn-ghost {
   padding-inline: 0;
 }
 
+/* Rows run edge to edge, as in the desktop rail, so the current page's bar
+   sits on the menu's edge. */
 .mobile-menu .rs-sidebar-item {
-  margin-inline: -12px;
-  padding-inline: 12px;
-  border-radius: var(--radius-sm);
+  margin-inline: -20px;
+  padding-inline: 20px;
 }
 
 /* ── Current page in the nav ──

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { navigate } from "astro:transitions/client";
+import { Button } from "@noorddev/vlak-react/components/button";
 import { Command, type CommandGroup, type CommandItem } from "@noorddev/vlak-react/components/command";
 import { Dialog } from "@noorddev/vlak-react/components/dialog";
 import { Icon } from "@noorddev/vlak-react/components/icon";
@@ -255,6 +256,9 @@ export default function Search({ index, clientName }: Props) {
             emptyLabel={empty}
             onDone={close}
           />
+          <Button variant="ghost" size="icon" className="search-close" aria-label="Close search" onClick={close}>
+            <Icon name="close" size={24} aria-hidden="true" />
+          </Button>
           <p className="search-foot" aria-hidden="true">
             <span>
               <kbd>↑</kbd> <kbd>↓</kbd> to move
