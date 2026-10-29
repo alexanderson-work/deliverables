@@ -47,9 +47,20 @@ const brandNote = brand
             All brand assets
           </a>
         </div>
-        <a class="showcase" href={`${base}brand/`} style={`--ground-light: ${brand.grounds.light}`}>
+        <a
+          class="showcase"
+          href={`${base}brand/`}
+          style={`--ground-light: ${brand.grounds.light}; --ground-dark: ${brand.grounds.dark}`}
+        >
           <span class="showcase-logo">
-            <img src={lead.preview} alt={`${name} ${brand.assets[0].group.toLowerCase()}`} />
+            {client.data.theme?.logo ? (
+              <>
+                <img class="only-light" src={lead.preview} alt={`${name} ${brand.assets[0].group.toLowerCase()}`} />
+                <img class="only-dark" src={client.data.theme.logo.dark} alt={`${name} ${brand.assets[0].group.toLowerCase()}`} />
+              </>
+            ) : (
+              <img src={lead.preview} alt={`${name} ${brand.assets[0].group.toLowerCase()}`} />
+            )}
           </span>
           {brand.colors.length > 0 && (
             <span class="strip" aria-hidden="true">

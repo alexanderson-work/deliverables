@@ -26,8 +26,8 @@ export default function MobileNav({ clientName, home, here, current, groups, stu
       <a className="mobile-bar-name" href={home}>
         {logo ? (
           <>
-            <img className="lockup lockup--light" src={logo.light} alt={clientName} />
-            <img className="lockup lockup--dark" src={logo.dark} alt={clientName} />
+            <img className="lockup only-light" src={logo.light} alt={clientName} />
+            <img className="lockup only-dark" src={logo.dark} alt={clientName} />
           </>
         ) : (
           clientName

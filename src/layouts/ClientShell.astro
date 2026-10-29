@@ -41,8 +41,8 @@ const theme = client.data.theme;
       {
         theme?.logo ? (
           <>
-            <img class="lockup lockup--light" src={theme.logo.light} alt={client.data.name} />
-            <img class="lockup lockup--dark" src={theme.logo.dark} alt={client.data.name} />
+            <img class="lockup only-light" src={theme.logo.light} alt={client.data.name} />
+            <img class="lockup only-dark" src={theme.logo.dark} alt={client.data.name} />
           </>
         ) : (
           client.data.name

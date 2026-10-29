@@ -89,30 +89,31 @@ a.rs-btn-ghost {
   text-decoration: none;
 }
 
-/* A client's lockup in the header, swapped with the scheme. */
+/* A client's lockup in the header. */
 .lockup {
   display: block;
   width: auto;
   height: 22px;
 }
 
-.lockup--dark {
+/* Show one of a pair per scheme: a lockup, a logo, anything with a light and dark version. */
+.only-dark {
   display: none;
 }
 
-:root[data-theme="dark"] .lockup--light {
+:root[data-theme="dark"] .only-light {
   display: none;
 }
 
-:root[data-theme="dark"] .lockup--dark {
+:root[data-theme="dark"] .only-dark {
   display: block;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .lockup--light {
+  :root:not([data-theme="light"]) .only-light {
     display: none;
   }
-  :root:not([data-theme="light"]) .lockup--dark {
+  :root:not([data-theme="light"]) .only-dark {
     display: block;
   }
 }
@@ -1069,8 +1070,19 @@ a.row:focus-visible {
   background-color: var(--ground-light, #ffffff);
 }
 
+/* In the dark scheme the showcase sits on the brand's dark ground with the reversed logo. */
+:root[data-theme="dark"] .showcase-logo {
+  background-color: var(--ground-dark, var(--bg));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .showcase-logo {
+    background-color: var(--ground-dark, var(--bg));
+  }
+}
+
+/* No display here: grid items are already blocks, and .only-light/.only-dark own it. */
 .showcase-logo img {
-  display: block;
   width: 100%;
   height: auto;
 }
