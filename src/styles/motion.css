@@ -1,10 +1,17 @@
-/* Motion, in Vlak's language.
-   One curve (--ease, cubic-bezier(0.3, 0, 0.2, 1)) and Vlak's durations:
-   --duration 0.2s, --duration-confirm 0.3s, --duration-deliberate 0.4s.
-   "A state the user caused may ease, snap with a short curve, or confirm.
-   Color and opacity name the change; nothing bounces."
-   Motion answers the reader: nothing plays on its own, and all of it stops
-   under prefers-reduced-motion. */
+/* Motion, in Vlak's language, with a little inertia.
+   Fades use Vlak's curve (--ease) and durations (--duration 0.2s,
+   --duration-confirm 0.3s, --duration-deliberate 0.4s).
+   Anything that moves uses --ease-glide: it starts at once and decelerates
+   over a long tail, like something pushed rather than driven. Hovers arrive
+   quickly and let go slowly.
+   "Color and opacity name the change; nothing bounces." Motion answers the
+   reader: nothing plays on its own, and all of it stops under reduced motion. */
+
+:root {
+  --ease-glide: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-glide: 0.6s;
+  --duration-release: 0.45s;
+}
 
 @keyframes motion-fade-out {
   to {
@@ -18,18 +25,17 @@
   }
 }
 
-/* The same 8px settle vlak.dev uses for content arriving. */
-@keyframes motion-settle {
+/* The rise half of vlak.dev's arrival: content settles up into place. */
+@keyframes motion-rise {
   from {
-    opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
 }
 
 /* ── Page to page ──
-   The header and rail hold still. The old page clears first and the new one
-   settles in after it, never on top of it: overlapping two different pages
-   reads as a double exposure. 0.15s out, a 0.1s beat, 0.3s in. */
+   The header and rail hold still. The old page clears first and the new page's
+   content arrives after it, never on top of it: overlapping two different pages
+   reads as a double exposure. */
 
 @view-transition {
   navigation: auto;
@@ -51,8 +57,10 @@
   animation: motion-fade-out calc(var(--duration) * 0.75) var(--ease) both;
 }
 
+/* The new page's paper fades up after the old one clears; its content then
+   arrives in sequence inside it (.arrive below), so nothing rises twice. */
 ::view-transition-new(root) {
-  animation: motion-settle var(--duration-confirm) var(--ease) var(--duration-snap) both;
+  animation: motion-fade-in var(--duration) var(--ease) var(--duration-snap) both;
 }
 
 html:not(.theme-switching)::view-transition-group(app-top),
@@ -65,6 +73,19 @@ html:not(.theme-switching)::view-transition-group(mobile-top),
 html:not(.theme-switching)::view-transition-old(mobile-top),
 html:not(.theme-switching)::view-transition-new(mobile-top) {
   animation: none;
+}
+
+/* ── Arrival ──
+   When a page opens, what's on screen comes in one piece after another: the
+   title, its intro, then each block, about 55ms apart. Each fades on Vlak's
+   curve and rises on the glide. Content below the fold is simply there.
+   ClientShell marks the pieces and their order before the first paint. */
+
+.arrive {
+  animation:
+    motion-fade-in var(--duration-deliberate) var(--ease) both,
+    motion-rise var(--duration-glide) var(--ease-glide) both;
+  animation-delay: calc(120ms + var(--stagger, 0) * 55ms);
 }
 
 /* ── Light and dark ──
@@ -99,22 +120,42 @@ html.title-in-view .mobile-bar-here {
 }
 
 /* ── Outline marker ──
-   Glides to the section being read. */
+   Glides to the section being read and eases to a stop. */
 
 .toc-marker.is-ready {
   transition:
-    transform var(--duration-confirm) var(--ease),
-    height var(--duration-confirm) var(--ease);
+    transform var(--duration-glide) var(--ease-glide),
+    height var(--duration-glide) var(--ease-glide);
 }
 
-/* ── Rows and tiles ── */
+/* ── Hover ──
+   Quick to arrive, slow to let go: the highlight trails off after the pointer leaves. */
+
+.row::before,
+.row-title,
+.pager strong,
+.rs-sidebar-item,
+.toc a {
+  transition-duration: var(--duration-release);
+  transition-timing-function: var(--ease-glide);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  a.row:hover::before,
+  a.row:hover .row-title,
+  .pager a:hover strong,
+  .rs-sidebar-item:hover,
+  .toc a:hover {
+    transition-duration: var(--duration-snap);
+  }
+}
 
 .row-go {
   opacity: 0;
-  transform: translateX(-4px);
+  transform: translateX(-6px);
   transition:
-    opacity var(--duration) var(--ease),
-    transform var(--duration) var(--ease);
+    opacity var(--duration-release) var(--ease),
+    transform var(--duration-release) var(--ease-glide);
 }
 
 a.row:focus-visible .row-go {
@@ -126,16 +167,18 @@ a.row:focus-visible .row-go {
   a.row:hover .row-go {
     opacity: 1;
     transform: none;
+    transition-duration: var(--duration), var(--duration-glide);
   }
 }
 
 .asset-preview {
-  transition: border-color var(--duration) var(--ease);
+  transition: border-color var(--duration-release) var(--ease-glide);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .asset:hover .asset-preview--light {
     border-color: var(--control-border);
+    transition-duration: var(--duration-snap);
   }
 }
 
@@ -170,27 +213,27 @@ img.is-loading {
 }
 
 /* ── Phone menu ──
-   The sheet eases in from its edge over a fading backdrop, and back out. */
+   The sheet glides in from its edge over a fading backdrop, and back out. */
 
 .mobile-menu {
   transition:
     opacity var(--duration-confirm) var(--ease),
-    transform var(--duration-confirm) var(--ease),
-    overlay var(--duration-confirm) allow-discrete,
-    display var(--duration-confirm) allow-discrete;
+    transform var(--duration-glide) var(--ease-glide),
+    overlay var(--duration-glide) allow-discrete,
+    display var(--duration-glide) allow-discrete;
 }
 
 .mobile-menu:not([open]) {
   opacity: 0;
-  transform: translateX(-12px);
+  transform: translateX(-24px);
 }
 
 .mobile-menu::backdrop {
   opacity: 0;
   transition:
     opacity var(--duration-confirm) var(--ease),
-    overlay var(--duration-confirm) allow-discrete,
-    display var(--duration-confirm) allow-discrete;
+    overlay var(--duration-glide) allow-discrete,
+    display var(--duration-glide) allow-discrete;
 }
 
 .mobile-menu[open]::backdrop {
@@ -200,7 +243,7 @@ img.is-loading {
 @starting-style {
   .mobile-menu[open] {
     opacity: 0;
-    transform: translateX(-12px);
+    transform: translateX(-24px);
   }
   .mobile-menu[open]::backdrop {
     opacity: 0;
@@ -220,7 +263,8 @@ img.is-loading {
 
   ::view-transition-group(*),
   ::view-transition-old(*),
-  ::view-transition-new(*) {
+  ::view-transition-new(*),
+  .arrive {
     animation: none !important;
   }
 
@@ -229,15 +273,18 @@ img.is-loading {
   html.title-in-view .app-top .rs-crumbs-item:last-child,
   html.title-in-view .mobile-bar-here,
   .toc-marker.is-ready,
+  .row::before,
   .row-title,
   .pager strong,
+  .rs-sidebar-item,
+  .toc a,
   .row-go,
   .asset-preview,
   img[loading="lazy"],
   .copy-icon > *,
   .mobile-menu,
   .mobile-menu::backdrop {
-    transition: none;
+    transition: none !important;
   }
 
   .row-go,
